@@ -1,0 +1,15 @@
+{
+  "title": "Performance Analysis and Tuning on Modern CPUs",
+  "description": "A book by Denis Bakhvalov on performance analysis and tuning techniques for modern CPUs",
+  "author": "Denis Bakhvalov",
+  "language": "en",
+  "gitbook": ">= 3.2.0",
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md"
+  },
+  "plugins": [
+    "-sharing",
+    "expandable-chapters"
+  ]
+}

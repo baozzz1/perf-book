@@ -1,9 +1,6 @@
-\phantomsection
-# Appendix D. Event Tracing for Windows Analysis {.unnumbered}
+# Appendix D. Event Tracing for Windows Analysis
 
-\markboth{Appendix D}{Appendix D}
-
-We provided an introduction to ETW in [@sec:ETW]. In this section, we will continue where we left off, and explore tools to record and analyze ETW. To demonstrate the look-and-feel of these tools, we present a case study of debugging a slow start of a program.
+We provided an introduction to ETW in [ETW]. In this section, we will continue where we left off, and explore tools to record and analyze ETW. To demonstrate the look-and-feel of these tools, we present a case study of debugging a slow start of a program.
 
 ### Tools to Record ETW traces {.unlisted .unnumbered}
 
@@ -43,13 +40,13 @@ C:\Windows\System32\WPR.exe
 #### Capture traces {.unlisted .unnumbered}
 
 - Start ETWController.
-- Select the CSwitch profile to track thread wait times along with the other default recording settings. Ensure the check boxes *Record mouse clicks* and *Take cyclic screenshots* are ticked (see Figure @fig:ETWController_Dialog) so later you will be able to navigate to the slow spots with the help of the screenshots.
+- Select the CSwitch profile to track thread wait times along with the other default recording settings. Ensure the check boxes *Record mouse clicks* and *Take cyclic screenshots* are ticked (see Figure ETWController_Dialog) so later you will be able to navigate to the slow spots with the help of the screenshots.
  - Download an application from the internet, and unpack it if needed. It doesn't matter what program you use, the goal is to see the delay when starting it.
  - Start profiling by pressing the *Start Recording* button.
  - Double-click the executable to start it. 
  - Once a program has started, stop profiling by pressing the *Stop Recording* button. 
 
-![Starting ETW collection with ETWController UI.](../../img/perf-tools/ETWController_Dialog.png){#fig:ETWController_Dialog width=100%}
+![Starting ETW collection with ETWController UI.](../../img/perf-tools/ETWController_Dialog.png)
 
 Stopping profiling the first time takes a bit longer because Program-Debug Data Base files (PDBs) are generated for all managed code, which is a one-time operation. After profiling has reached the Stopped state you can press the *Open in WPA* button to load the ETL file into the Windows Performance Analyzer with an ETWController-supplied profile. The CSwitch profile generates a large amount of data that is stored in a 4 GB ring buffer, which allows you to record 1-2 minutes before the oldest events are overwritten. Sometimes it is a bit of an art to stop profiling at the right time point. If you have sporadic issues you can keep recording enabled for hours and stop it when an event like a log entry in a file shows up, which is checked by a polling script.
 
@@ -57,19 +54,19 @@ Windows supports Event Log and Performance Counter triggers that can start a scr
 
 #### Analysis in WPA {.unlisted .unnumbered}
 
-\hfill \break
+  <br>
 
-Figure @fig:WPA_MainView shows the recorded ETW data opened in Windows Performance Analyzer (WPA). The WPA view is divided into three vertically layered parts: *CPU Usage (Sampled)*, *Generic Events*, and *CPU Usage (Precise)*. To understand the difference between them, let's dive deeper. The upper graph *CPU Usage (Sampled)* is useful for identifying where the CPU time is spent. The data is collected by sampling all the running threads at a regular time interval. This *CPU Usage (Sampled)* graph is very similar to the *Hotspots* view in other profiling tools.
+Figure WPA_MainView shows the recorded ETW data opened in Windows Performance Analyzer (WPA). The WPA view is divided into three vertically layered parts: *CPU Usage (Sampled)*, *Generic Events*, and *CPU Usage (Precise)*. To understand the difference between them, let's dive deeper. The upper graph *CPU Usage (Sampled)* is useful for identifying where the CPU time is spent. The data is collected by sampling all the running threads at a regular time interval. This *CPU Usage (Sampled)* graph is very similar to the *Hotspots* view in other profiling tools.
 
-![Windows Performance Analyzer: root causing a slow start of an application.](../../img/perf-tools/WPA_MainView.png){#fig:WPA_MainView width=100% }
+![Windows Performance Analyzer: root causing a slow start of an application.](../../img/perf-tools/WPA_MainView.png)
 
 Next comes the *Generic Events* view, which displays events such as mouse clicks and captured screenshots. Remember that we enabled interception of those events in the ETWController window. Because events are placed on the timeline, it is easy to correlate UI interactions with how the system reacts to them.
 
 The bottom Graph *CPU Usage (Precise)* uses a different source of data than the *Sampled* view. While sampling data only captures running threads, CSwitch collection takes into account time intervals during which a process was not running. The data for the *CPU Usage (Precise)* view comes from the Windows Thread Scheduler. This graph traces how long, and on which CPU, a thread was running (CPU Usage), how long it was blocked in a kernel call (Waits), in which priority, and how long the thread had been waiting for a CPU to become free (Ready Time), etc. Consequently, the *CPU Usage (Precise)* view doesn't show the top CPU consumers, but this view is very helpful for understanding how long and *why* a certain process was blocked.
 
-Now that we have familiarized ourselves with the WPA interface, let's observe the charts. First, we can find the `MouseButton` events 63 and 64 on the timeline. ETWController saves all the screenshots taken during collection in a newly created folder. The profiling data itself is saved in the file named `SlowProcessStart.etl` and there is a new folder named `SlowProcessStart.etl.Screenshots`. This folder contains the screenshots and a `Report.html` file that you can view in a web browser. Every recorded keyboard/mouse interaction is saved in a file with the event number in its name, e.g., `Screenshot_63.jpg`. Figure @fig:ETWController_ClickScreenshot (cropped) displays the mouse double-click (events 63 and 64). The mouse pointer position is marked as a green square, except if a click event did occur, then it is red. This makes it easy to spot when and where a mouse click was performed.
+Now that we have familiarized ourselves with the WPA interface, let's observe the charts. First, we can find the `MouseButton` events 63 and 64 on the timeline. ETWController saves all the screenshots taken during collection in a newly created folder. The profiling data itself is saved in the file named `SlowProcessStart.etl` and there is a new folder named `SlowProcessStart.etl.Screenshots`. This folder contains the screenshots and a `Report.html` file that you can view in a web browser. Every recorded keyboard/mouse interaction is saved in a file with the event number in its name, e.g., `Screenshot_63.jpg`. Figure ETWController_ClickScreenshot (cropped) displays the mouse double-click (events 63 and 64). The mouse pointer position is marked as a green square, except if a click event did occur, then it is red. This makes it easy to spot when and where a mouse click was performed.
 
-![A mouse click screenshot captured with ETWController.](../../img/perf-tools/ETWController_ClickScreenshot.png){#fig:ETWController_ClickScreenshot width=70% }
+![A mouse click screenshot captured with ETWController.](../../img/perf-tools/ETWController_ClickScreenshot.png)
 
 The double click marks the beginning of a 1.2-second delay when our application was waiting for something. At timestamp `35.1`, `explorer.exe` is active as it attempts to launch the new application. But then it wasn't doing much work and the application didn't start. Instead, `MsMpEng.exe` takes over the execution up until the time `35.7`. So far, it looks like an antivirus scan before the downloaded executable is allowed to start. But we are not 100% sure that `MsMpEng.exe` is blocking the start of a new application.
 

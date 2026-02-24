@@ -1,9 +1,6 @@
-\phantomsection
-# Appendix A. Reducing Measurement Noise {.unnumbered}
+# Appendix A. Reducing Measurement Noise
 
-\markboth{Appendix A}{Appendix A}
-
-Below are some examples of features that can contribute to increased non-determinism in performance measurements and a few techniques to reduce noise. I provided an introduction to the topic in [@sec:secFairExperiments].
+Below are some examples of features that can contribute to increased non-determinism in performance measurements and a few techniques to reduce noise. I provided an introduction to the topic in [secFairExperiments].
 
 This section is mostly specific to the Linux operating system. Readers are encouraged to search the web for instructions on how to configure other operating systems.
 
@@ -43,7 +40,7 @@ echo 0 > /sys/devices/system/cpu/cpufreq/boost
 ```
 ## Simultaneous Multithreading {.unnumbered .unlisted}
 
-Many modern CPU cores support simultaneous multithreading (see [@sec:SMT]). SMT can be permanently disabled in BIOS. To programmatically disable SMT on Linux systems, you need root access. The sibling pairs of CPU threads can be found in the following files:
+Many modern CPU cores support simultaneous multithreading (see [SMT]). SMT can be permanently disabled in BIOS. To programmatically disable SMT on Linux systems, you need root access. The sibling pairs of CPU threads can be found in the following files:
 
 ```bash
 /sys/devices/system/cpu/cpuN/topology/thread_siblings_list

@@ -1,16 +1,13 @@
-\phantomsection
-# Appendix B. Enable Huge Pages {.unnumbered}
+# Appendix B. Enable Huge Pages
 
-\markboth{Appendix B}{Appendix B}
-
-## Windows {.unnumbered}
+## Windows
 
 To utilize huge pages on Windows, you need to enable `SeLockMemoryPrivilege` [security policy](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/lock-pages-in-memory). This can be done programmatically via the Windows API, or alternatively via the security policy GUI.
 
 1. Hit start &rarr; search "secpol.msc", and launch it.
 2. On the left select "Local Policies" &rarr; "User Rights Assignment", then double-click on "Lock pages in memory".
 
-![Windows security: Lock pages in memory](../../img/appendix-C/WinLockPages.png){width=100%}
+![Windows security: Lock pages in memory](../../img/appendix-C/WinLockPages.png)
 
 3. Add your user and reboot the machine.
 
@@ -27,7 +24,7 @@ void* p = VirtualAlloc(NULL, size, MEM_RESERVE |
 VirtualFree(ptr, 0, MEM_RELEASE);
 ```
 
-## Linux {.unnumbered}
+## Linux
 
 On Linux OS, there are two ways of using huge pages in an application: Explicit and Transparent Huge Pages.
 
