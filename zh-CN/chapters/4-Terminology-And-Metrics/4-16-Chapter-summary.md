@@ -1,0 +1,10 @@
+## 本章小结 {.unlisted .unnumbered}
+
+\markright{Summary}
+
+* 在本章中，我们介绍了性能分析中的基本指标，如已退休/已执行指令（retired/executed instructions）、CPU 利用率（CPU utilization）、IPC/CPI、$\mu$ops、流水线槽（pipeline slots）、核心/参考时钟（core/reference clocks）、缓存未命中（cache misses）和分支预测错误（branch mispredictions）。我们展示了如何使用 Linux `perf` 收集这些指标中的每一个。
+* 对于更高级的性能分析，有许多可以收集的派生指标。例如，每千条指令的缓存未命中次数（MPKI）、每次函数调用、分支、加载等的指令数（Ip*）、ILP、MLP 等。本章的案例研究展示了如何从分析这些指标中获得可操作的洞察。
+* 在仅通过查看汇总数据得出结论时要谨慎。不要陷入"Excel 性能工程（Excel performance engineering）"的陷阱，即只收集性能指标而从不查看代码。始终寻求第二个数据来源（例如，稍后讨论的性能概要）来验证你的想法。
+* 内存带宽和延迟是当今许多生产软件包（包括 AI、HPC、数据库以及许多通用应用程序）性能的关键因素。内存带宽取决于 DRAM 速度（以 MT/s 为单位）和内存通道数量。现代高端服务器平台有 8--12 个内存通道，整个系统可达 500 GB/s，单线程模式下可达 50 GB/s。内存延迟如今变化不大，实际上随着新一代 DDR4 和 DDR5 的推出，延迟略有增加。大多数现代面向客户端的系统每次内存访问的延迟范围为 70--110 ns。服务器平台的内存延迟可能更高。
+
+\sectionbreak
