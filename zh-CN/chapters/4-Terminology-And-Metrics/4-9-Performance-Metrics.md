@@ -15,7 +15,7 @@
 | Load STLB MPKI | 每千条指令的 STLB 数据加载推测性未命中次数 | 1000 * DTLB_LD_MISSES.WALK_COMPLETED / INST_RETIRED.ANY |
 | Store STLB MPKI | 每千条指令的 STLB 数据存储推测性未命中次数 | 1000 * DTLB_ST_MISSES.WALK_COMPLETED / INST_RETIRED.ANY |
 | Load Miss Real Latency | L1 D-cache 未命中按需加载操作的平均延迟（以核心周期计） | L1D_PEND_MISS.PENDING / MEM_LD_COMPLETED.L1_MISS_ANY |
-| ILP | 每核心的指令级并行度（有执行时平均执行的 $\mu$ops 数量） | UOPS_EXECUTED.THREAD / UOPS_EXECUTED.CORE_CYCLES_GE1, 若启用 SMT 则除以 2 |
+| ILP | 每核心的指令级并行度（有执行时平均执行的 μops 数量） | UOPS_EXECUTED.THREAD / UOPS_EXECUTED.CORE_CYCLES_GE1, 若启用 SMT 则除以 2 |
 | MLP | 每线程的内存级并行度（至少有一个 L1 未命中按需加载时的平均未命中数量） | L1D_PEND_MISS.PENDING / L1D_PEND_MISS.PENDING_CYCLES |
 | DRAM BW Use GB/sec | 读写操作的平均外部内存带宽使用量（GB/s） | ( 64 * ( UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR ) / 1GB ) / Time |
 | IpCall | 每次近调用（near call）的指令数（数字越小表示发生率越高） | INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_CALL |

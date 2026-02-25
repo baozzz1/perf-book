@@ -33,6 +33,7 @@ void matmul(int N, float a[][2048], float b[][2048], float c[][2048]) {
 
 
 理论最大值（屋顶线）通常在设备规格中列出，可以轻松查阅。此外，理论最大值可以根据你所使用的机器的特性计算得出。一旦了解机器参数，通常并不难做到。对于 Intel Core i5-8259U 处理器，使用 AVX2 和 2 个融合乘加（Fused Multiply Add，FMA）单元的最大 FLOPS（单精度浮点数）可计算为：
+
 $$
 \begin{aligned}
 \textrm{Peak FLOPS} =& \textrm{ 8 (number of logical cores)}~\times~\frac{\textrm{256 (AVX bit width)}}{\textrm{32 bit (size of float)}} ~ \times ~ \\

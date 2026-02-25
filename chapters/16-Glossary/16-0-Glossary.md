@@ -105,6 +105,6 @@
 
 **TSC** Time Stamp Counter
 
-**$\mu$op** MicroOperation
+**μop** MicroOperation
 
 

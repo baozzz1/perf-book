@@ -7,6 +7,7 @@
 该指标表示应用程序对可用 CPU 的有效利用程度。它显示系统上所有逻辑 CPU 的平均 CPU 利用率百分比。该指标仅基于*有效时间*，不包括并行运行时系统[^11]引入的开销和自旋时间（Spin time）。*有效 CPU 利用率*为 100% 表示应用程序在整个运行期间始终保持所有逻辑 CPU 核心忙碌。
 
 对于指定的时间间隔 `T`，*有效 CPU 利用率*可计算如下：
+
 $$
 \textrm{Effective CPU Utilization} = \frac{\sum_{i=1}^{\textrm{ThreadCount}}\textrm{Effective CPU Time(T,i)}}{\textrm{T}~\times~\textrm{ThreadCount}}
 $$

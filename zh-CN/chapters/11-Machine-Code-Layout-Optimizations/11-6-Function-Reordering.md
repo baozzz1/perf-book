@@ -19,7 +19,7 @@
 重排热函数。
 </div>
 
-与前面的优化类似，函数重排改善了 I-cache 和 $\mu$op 缓存的利用率。此优化在有许多小型热函数时效果最佳。
+与前面的优化类似，函数重排改善了 I-cache 和 μop 缓存的利用率。此优化在有许多小型热函数时效果最佳。
 
 链接器（linker）负责在最终二进制输出中排列程序的所有函数。虽然开发者可以尝试自行重新排列程序中的函数，但无法保证所需的物理布局。几十年来，人们一直使用链接器脚本（linker scripts）来实现这一目标。如果你使用的是 GNU 链接器，这仍然是可行的方法。Gold 链接器（`ld.gold`）对这个问题有更简便的处理方式。要使用 Gold 链接器在二进制文件中实现所需的函数排序，可以先使用 `-ffunction-sections` 标志编译代码，这会将每个函数放入单独的 section。然后使用 [`--section-ordering-file=order.txt`](https://manpages.debian.org/unstable/binutils/x86_64-linux-gnu-ld.gold.1.en.html) 选项提供一个包含函数名排序列表的文件，该列表反映了所需的最终布局。LLD 链接器（LLVM 编译器基础设施的一部分）中也存在相同功能，可通过 `--symbol-ordering-file` 选项访问。
 

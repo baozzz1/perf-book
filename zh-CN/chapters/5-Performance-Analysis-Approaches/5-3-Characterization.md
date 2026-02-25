@@ -56,13 +56,17 @@ cache:
 </div>
 
 使用多路复用时，事件不是一直被测量，而是只在一部分时间内被测量。在运行结束时，性能分析工具需要根据总启用时间（total time enabled）对原始计数进行缩放：
+
 $$
 final~count = raw~count \times ( time~running / time~enabled )
 $$
+
 以图 Multiplexing2 为例。假设在性能分析期间，我们能够在三个时间间隔内测量第 1 组的一个事件。每个测量间隔持续 100ms（`time enabled`）。程序运行时间为 500ms（`time running`）。该计数器的总事件数被测量为 10,000（`raw count`）。因此，最终计数需要如下缩放：
+
 $$
 final~count = 10,000 \times ( 500ms / ( 100ms \times 3) ) = 16,666
 $$
+
 这提供了一个估计值，表示如果在整个运行期间都测量该事件，计数会是多少。非常重要的是要理解，这仍然是一个估计值，而不是实际计数。多路复用和缩放可以安全地用于在长时间间隔内执行相同代码的稳定（steady）工作负载。但是，如果程序在不同热点之间频繁跳转，即具有不同的执行阶段（phases），则会有盲点，这可能在缩放过程中引入误差。为了避免缩放，你可以将事件数量减少到不超过可用物理 PMC 的数量。但是，你将不得不多次运行基准测试以测量所有事件。
 
 [^4]: VMware PMCs - [https://www.vladan.fr/what-are-vmware-virtual-cpu-performance-monitoring-counters-vpmcs/](https://www.vladan.fr/what-are-vmware-virtual-cpu-performance-monitoring-counters-vpmcs/)

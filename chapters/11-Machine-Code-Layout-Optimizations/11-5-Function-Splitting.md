@@ -30,6 +30,6 @@ Notice, that we disable the inlining of cold functions by using the `noinline` a
 Splitting cold code into a separate function.
 </div>
 
-Figure FunctionSplitting gives a graphical representation of this transformation. In the improved layout, we left just a `CALL` instruction inside the hot path, the next hot instruction will likely reside in the same cache line as the previous one. This improves the utilization of CPU Frontend data structures such as I-cache and $\mu$op-cache.
+Figure FunctionSplitting gives a graphical representation of this transformation. In the improved layout, we left just a `CALL` instruction inside the hot path, the next hot instruction will likely reside in the same cache line as the previous one. This improves the utilization of CPU Frontend data structures such as I-cache and μop-cache.
 
 Outlined functions should be created outside of the `.text` segment, for example in `.text.cold`. This improves memory footprint if the function is never called since it won't be loaded into memory at runtime.

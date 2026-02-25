@@ -27,6 +27,7 @@ Traditional ways to speed up an application's performance is to fully utilize th
 ![Roofline analysis of a program and potential ways to improve its performance.](../../img/perf-analysis/Roofline-intro2.jpg)
 
 Theoretical maximums (rooflines) are often presented in a device specification and can be easily looked up. Also, theoretical maximums can be calculated based on the characteristics of the machine you are using. Usually, it is not hard to do once you know the parameters of your machine. For the Intel Core i5-8259U processor, the maximum number of FLOPS (single-precision floats) with AVX2 and 2 Fused Multiply Add (FMA) units can be calculated as:
+
 $$
 \begin{aligned}
 \textrm{Peak FLOPS} =& \textrm{ 8 (number of logical cores)}~\times~\frac{\textrm{256 (AVX bit width)}}{\textrm{32 bit (size of float)}} ~ \times ~ \\

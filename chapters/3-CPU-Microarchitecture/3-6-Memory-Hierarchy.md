@@ -16,9 +16,11 @@ Caches are organized as blocks with a defined size, also known as *cache lines*.
 #### Placement of Data within the Cache.
 
 The address for a request is used to access the cache. In *direct-mapped* caches, a given block address can appear only in one location in the cache and is defined by a mapping function shown below. Dirrect-mapped caches are relatively easy to build and have fast access time, however, they have a high miss rate.
+
 $$
 \textrm{Number of Blocks in the Cache} = \frac{\textrm{Cache Size}}{\textrm{Cache Block Size}}
 $$
+
 $$
 \textrm{Direct mapped location} = \textrm{(block address)  mod  (Number of Blocks in the Cache )}
 $$
@@ -26,9 +28,11 @@ $$
 In a *fully associative* cache, a given block can be placed in any location in the cache. This approach involves high hardware complexity and slow access time, thus considered impractical for most use cases.
 
 An intermediate option between direct mapping and fully associative mapping is a *set-associative* mapping. In such a cache, the blocks are organized as sets, typically each set containing 2, 4, 8, or 16 blocks. A given address is first mapped to a set. Within a set, the address can be placed anywhere, among the blocks in that set. A cache with m blocks per set is described as an m-way set-associative cache. The formulas for a set-associative cache are:
+
 $$
 \textrm{Number of Sets in the Cache} = \frac{\textrm{Number of Blocks in the Cache}}{\textrm{Number of Blocks per Set (associativity)}}
 $$
+
 $$
 \textrm{Set (m-way) associative location} = \textrm{(block address)  mod  (Number of Sets in the Cache)}
 $$
@@ -68,9 +72,11 @@ Out of these options, most designs typically choose to implement a write-back ca
 #### Other Cache Optimization Techniques.
 
 For a programmer, understanding the behavior of the cache hierarchy is critical to extracting performance from any application. From the perspective of the CPU pipeline, the latency to access any request is given by the following formula that can be applied recursively to all the levels of the cache hierarchy up to the main memory:
+
 $$
 \textrm{Average Access Latency} = \textrm{Hit Time } + \textrm{ Miss Rate } \times \textrm{ Miss Penalty}
 $$
+
 Hardware designers take on the challenge of reducing the hit time and miss penalty through many novel micro-architecture techniques. Fundamentally, cache misses stall the pipeline and hurt performance. The miss rate for any cache is highly dependent on the cache architecture (block size, associativity) and the software running on the machine.
 
 #### Hardware and Software Prefetching.
@@ -126,6 +132,7 @@ A system with a single memory channel has a 64-bit wide data bus between the DRA
 Alternatively, you could also encounter setups with duplicated memory controllers. For example, a processor may have two integrated memory controllers, each of them capable of supporting several memory channels. The two controllers are independent and only view their own slice of the total physical memory address space.
 
 We can do a quick calculation to determine the maximum memory bandwidth for a given memory technology, using the simple formula below:
+
 $$
 \textrm{Max. Memory Bandwidth} = \textrm{Data Rate } \times \textrm{ Bytes per cycle }
 $$
