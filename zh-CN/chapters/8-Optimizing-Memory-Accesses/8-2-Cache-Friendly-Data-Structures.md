@@ -20,7 +20,10 @@ for (row = 0; row < NROWS; row++)                  for (row = 0; row < NROWS; ro
   for (col = 0; col < NCOLS; col++)                  for (col = 0; col < NCOLS; col++)
     matrix[col][row] = row + col;          =>          matrix[row][col] = row + col;
 ```
-![列优先与行优先遍历。](../../img/memory-access-opts/ColumnRowMajor.png)
+![列优先与行优先遍历。](../../../img/memory-access-opts/ColumnRowMajor.png)
+
+<p align="center"><em>列优先与行优先遍历。</em></p>
+
 
 上面展示的示例是经典的，但通常真实世界的应用程序要复杂得多。有时需要付出额外的努力才能编写缓存友好的代码。如果数据在内存中的布局方式对算法来说不是最优的，可能需要先重新排列数据。
 
@@ -63,7 +66,10 @@ struct S {                               struct S {
 };                                       };
 
 ```
-![通过重新排列字段避免编译器填充。空白单元格表示编译器填充。](../../img/memory-access-opts/AvoidPadding.png)
+![通过重新排列字段避免编译器填充。空白单元格表示编译器填充。](../../../img/memory-access-opts/AvoidPadding.png)
+
+<p align="center"><em>通过重新排列字段避免编译器填充。空白单元格表示编译器填充。</em></p>
+
 
 ### 字段重排序（Field Reordering）
 

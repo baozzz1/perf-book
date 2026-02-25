@@ -3,29 +3,12 @@
 
 CPU 前端优化摘要如表 CPU_FE_OPT 所示。
 
---------------------------------------------------------------------------
-Transform  How transformed?  Why helps?    Works best for        Done by
----------  ----------------  ------------  --------------------  ---------
-Basic      maintain          not taken     any code, especially  compiler
-block      fall through      branches are  with a lot of 
-placement  hot code          cheaper;      branches
-                             better cache
-                             utilization
-
-Basic      shift the hot     better cache  hot loops             compiler
-block      code using NOPs   utilization 
-alignment
-
-Function   split cold        better cache  functions with        compiler
-splitting  blocks of code    utilization   complex CFG when 
-           and place them                  there are big blocks 
-           in separate                     of cold code between 
-           functions                       hot parts
-
-Function   group hot         better cache  many small            linker
-reorder    functions         utilization   hot functions
-           together
---------------------------------------------------------------------------
+| Transform | How transformed? | Why helps? | Works best for | Done by |
+|-----------|-----------------|------------|----------------|---------|
+| Basic block placement | maintain fall through hot code | not taken branches are cheaper; better cache utilization | any code, especially with a lot of branches | compiler |
+| Basic block alignment | shift the hot code using NOPs | better cache utilization | hot loops | compiler |
+| Function splitting | split cold blocks of code and place them in separate functions | better cache utilization | functions with complex CFG when there are big blocks of cold code between hot parts | compiler |
+| Function reorder | group hot functions together | better cache utilization | many small hot functions | linker |
 
 表：CPU 前端优化摘要。
 

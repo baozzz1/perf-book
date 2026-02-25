@@ -11,7 +11,10 @@
 * **共享**（Shared）：缓存行存在于此处以及其他缓存行中，并且与其 RAM 中的值匹配
 * **无效**（Invalid）：缓存行未使用（即不包含任何 RAM 位置）
 
-![MESI 状态图。*© 来源：华盛顿大学，via courses.cs.washington.edu。*](../../img/mt-perf/MESI_Cache_Diagram.jpg)
+![MESI 状态图。*© 来源：华盛顿大学，via courses.cs.washington.edu。*](../../../img/mt-perf/MESI_Cache_Diagram.jpg)
+
+<p align="center"><em>MESI 状态图。© 来源：华盛顿大学，via courses.cs.washington.edu。</em></p>
+
 
 从内存中获取时，每个缓存行都有一个编码到其标记中的状态。然后缓存行状态不断从一种状态转变到另一种状态。[^25] 实际上，CPU 供应商通常实现 MESI 的略微改进变体。例如，Intel 使用 [MESIF](https://en.wikipedia.org/wiki/MESIF_protocol)，[^26]它添加了一个转发（Forwarding，F）状态，而 AMD 采用 [MOESI](https://en.wikipedia.org/wiki/MOESI_protocol)，[^27]它添加了所有权（Owning，O）状态。然而，这些协议仍然保持了基础 MESI 协议的本质。
 
@@ -52,7 +55,10 @@ S s;
     s.sumA += a[i];                │         s.sumB += b[i];
 }                                  │     }
 ```
-![假共享：两个线程访问同一缓存行。](../../img/mt-perf/FalseSharing.jpg)
+![假共享：两个线程访问同一缓存行。](../../../img/mt-perf/FalseSharing.jpg)
+
+<p align="center"><em>假共享：两个线程访问同一缓存行。</em></p>
+
 
 假共享是多线程应用程序性能问题的频繁来源。因此，现代分析工具内置了对检测此类情况的支持。对于遇到真共享/假共享的应用程序，TMA 可能会显示较高的 `Memory Bound` &rarr; `L3 Bound` &rarr; `Contested Accesses` 指标。[^18]
 

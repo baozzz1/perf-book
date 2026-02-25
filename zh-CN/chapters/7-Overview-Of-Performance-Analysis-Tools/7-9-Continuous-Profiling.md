@@ -4,7 +4,10 @@
 
 持续性能分析（CP）是一种系统级、基于采样的性能分析器，始终保持开启状态，但采样率较低以最小化运行时影响。持续收集所有进程的数据有助于分析代码在不同时间执行差异的原因，并在事件发生后辅助调试。CP 工具能够提供关于哪些代码最消耗资源的宝贵洞察，帮助工程师减少生产环境中的资源使用，从而节省成本。与 Linux perf 或 Intel VTune 等典型分析器不同，CP 可以从应用程序栈到内核栈精确定位*任意*给定日期和时间的性能问题，并支持在任意两个日期/时间之间进行调用栈比较，以突显性能差异。
 
-![Parca 持续性能分析器 Web UI 截图。](../../img/perf-tools/Continuous_profiling.png)
+![Parca 持续性能分析器 Web UI 截图。](../../../img/perf-tools/Continuous_profiling.png)
+
+<p align="center"><em>Parca 持续性能分析器 Web UI 截图。</em></p>
+
 
 为了展示典型 CP 工具的外观和使用感受，让我们看看 [Parca](https://github.com/parca-dev/parca)[^1] 的 Web UI，这是图 Continuous_profiling 中展示的一款开源 CP 工具。顶部面板显示了一个时间序列图，展示了在从时间窗口下拉列表中选择的时间段内（本例中为"最近 15 分钟"），从机器上各种进程收集的 CPU 样本数量。然而，为了适应页面，图像被裁剪为只显示最近 10 分钟。
 

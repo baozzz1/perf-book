@@ -11,8 +11,14 @@ if (cond)
 图 BBLayout 展示了这段代码的两种可能的物理布局。图 BB_default 是大多数编译器在没有提示的情况下默认生成的布局。如果我们反转条件 `cond` 并将热代码作为直通（fall through）路径，就可以得到图 BB_better 所示的布局。
 
 <div id="fig:BBLayout">
-![default layout](../../img/cpu_fe_opts/BBLayout_Default.png)
-![improved layout](../../img/cpu_fe_opts/BBLayout_Better.png)
+![default layout](../../../img/cpu_fe_opts/BBLayout_Default.png)
+
+<p align="center"><em>default layout</em></p>
+
+![improved layout](../../../img/cpu_fe_opts/BBLayout_Better.png)
+
+<p align="center"><em>improved layout</em></p>
+
 
 上述代码片段的两种机器码布局版本。
 </div>

@@ -21,7 +21,10 @@ RSS: 100K + 400K + 1000K = 1500K
 
 开发人员可以在 Linux 上使用标准的 `top` 工具观察 RSS 和 VSZ，但这两个指标可能变化非常快。幸运的是，有一些工具可以记录和可视化随时间变化的内存使用情况。图 MemoryUsageAIBench 展示了 PSPNet 图像分割算法的内存使用情况，该算法是 [AI Benchmark Alpha](https://ai-benchmark.com/alpha.html)[^5] 的一部分。该图表基于名为 [memory_profiler](https://github.com/pythonprofilers/memory_profiler)[^6] 的工具的输出创建，这是一个构建在跨平台 [psutil](https://github.com/giampaolo/psutil)[^7] 包之上的 Python 库。
 
-![AI_bench PSPNet 图像分割的 RSS 和 VSZ 内存利用率。](../../img/memory-access-opts/MemoryUsageAIBench.png)
+![AI_bench PSPNet 图像分割的 RSS 和 VSZ 内存利用率。](../../../img/memory-access-opts/MemoryUsageAIBench.png)
+
+<p align="center"><em>AI_bench PSPNet 图像分割的 RSS 和 VSZ 内存利用率。</em></p>
+
 
 除标准的 RSS 和 VSZ 指标外，人们还开发了一些更复杂的指标。由于 RSS 包括进程独有的内存和与其他进程共享的内存，因此不清楚进程自身拥有多少内存。USS（Unique Set Size，唯一集大小）是进程独有的内存，如果进程现在终止，该内存将被释放。PSS（Proportional Set Size，比例集大小）代表唯一内存加上共享内存在共享该内存的进程之间均匀分配的量。例如，如果一个进程有 10 MB 完全属于自己的内存（USS）和 10 MB 与另一个进程共享的内存，则其 PSS 将为 15 MB。`psutil` 库支持测量这些指标（仅限 Linux），可以通过 `memory_profiler` 进行可视化。
 
@@ -53,21 +56,33 @@ $ heaptrack ./stockfish bench 128 1 24 default depth
 - 几乎一半的分配调用来自 `operator new`，这些都是临时分配。我们能摆脱临时分配吗？你稍后会知道答案。
 - 内存泄漏对本案例研究不是问题。
 
-![Stockfish 的 Heaptrack 内存配置文件，摘要视图。](../../img/memory-access-opts/StockfishSummary.png)
+![Stockfish 的 Heaptrack 内存配置文件，摘要视图。](../../../img/memory-access-opts/StockfishSummary.png)
+
+<p align="center"><em>Stockfish 的 Heaptrack 内存配置文件，摘要视图。</em></p>
+
 
 注意，图像顶部有许多标签页；我们将探索其中一些。图 StockfishMemUsage 显示了 Stockfish 内置基准测试的内存使用情况。在整个程序运行过程中，内存使用始终保持在 200 MB 不变。总消耗内存被分割成切片，例如图中的区域①和②。每个切片对应一个特定的分配。有趣的是，通过 `Stockfish::std_aligned_alloc` 进行的并不是我们之前认为的单次大型 182 MB 分配。相反，有两次：切片①为 134.2 MB，切片②为 48.4 MB。两个分配都一直存活到基准测试的最后。
 
-![Stockfish 的 Heaptrack 内存配置文件，内存使用随时间保持不变。](../../img/memory-access-opts/Stockfish_consumed.png)
+![Stockfish 的 Heaptrack 内存配置文件，内存使用随时间保持不变。](../../../img/memory-access-opts/Stockfish_consumed.png)
+
+<p align="center"><em>Stockfish 的 Heaptrack 内存配置文件，内存使用随时间保持不变。</em></p>
+
 
 这是否意味着启动阶段之后没有内存分配了？让我们来查明。图 StockfishAllocations 显示了随时间累积的分配次数。与内存消耗图表（图 StockfishMemUsage）类似，分配按照每个函数归因的累积内存分配次数切片。如我们所见，新的分配持续来自不止一个地方，而是许多地方。最频繁的分配通过 `operator new` 进行，对应图中的区域①。
 
 注意整个程序生命周期内以稳定速度出现新分配。然而，正如我们刚才看到的，内存消耗没有变化；这怎么可能呢？嗯，如果我们释放之前分配的缓冲区并分配相同大小的新缓冲区（也称为*临时分配*），这是可能的。
 
-![Stockfish 的 Heaptrack 内存配置文件，分配次数持续增长。](../../img/memory-access-opts/Stockfish_allocations.png)
+![Stockfish 的 Heaptrack 内存配置文件，分配次数持续增长。](../../../img/memory-access-opts/Stockfish_allocations.png)
+
+<p align="center"><em>Stockfish 的 Heaptrack 内存配置文件，分配次数持续增长。</em></p>
+
 
 由于分配次数在增长但总消耗内存没有变化，我们正在处理临时分配。让我们找出它们在代码的哪个位置产生的。使用图 StockfishFlamegraph 中展示的火焰图可以轻松做到这一点。共有 4800 次临时分配，其中 90.8% 来自 `operator new`。借助火焰图，我们知道了导致 4360 次临时分配的完整调用栈。有趣的是，这些临时分配是由 `std::stable_sort` 发起的，它分配了一个临时缓冲区来进行排序。消除这些临时分配的一种方式是使用原地稳定排序算法。然而，这样做后我观察到性能下降了 8%，因此我放弃了这个更改。
 
-![Stockfish 的 Heaptrack 内存配置文件，临时分配火焰图。](../../img/memory-access-opts/Stockfish_flamegraph.png)
+![Stockfish 的 Heaptrack 内存配置文件，临时分配火焰图。](../../../img/memory-access-opts/Stockfish_flamegraph.png)
+
+<p align="center"><em>Stockfish 的 Heaptrack 内存配置文件，临时分配火焰图。</em></p>
+
 
 与临时分配类似，你还可以在程序中找到导致最大分配的路径。在图 StockfishFlamegraph 顶部的下拉菜单中，你需要选择"Consumed"火焰图。
 
@@ -79,7 +94,10 @@ $ heaptrack ./stockfish bench 128 1 24 default depth
 
 图 MemFootCaseStudyFourBench 展示了四个工作负载的内存强度和占用：Blender 光线追踪、Stockfish 国际象棋引擎、Clang++ 编译和 AI_bench PSPNet 分割。我们使用 Intel SDE（软件开发模拟器，Software Development Emulator）工具，采用 Easyperf [博客](https://easyperf.net/blog/2024/02/12/Memory-Profiling-Part3)[^6]上描述的方法，以 10 亿条指令为间隔收集图表数据。
 
-![四个工作负载的内存强度和占用。强度：每 10 亿条指令区间内访问的总内存。占用：之前未见过的已访问内存。](../../img/memory-access-opts/MemFootCaseStudyFourBench.png)
+![四个工作负载的内存强度和占用。强度：每 10 亿条指令区间内访问的总内存。占用：之前未见过的已访问内存。](../../../img/memory-access-opts/MemFootCaseStudyFourBench.png)
+
+<p align="center"><em>四个工作负载的内存强度和占用。强度：每 10 亿条指令区间内访问的总内存。占用：之前未见过的已访问内存。</em></p>
+
 
 实线（Intensity，强度）追踪每个 10 亿条指令区间内访问的字节数。这里，我们不计算某个内存位置被访问了多少次。如果一个内存位置在区间 `I` 内被加载了两次，我们只计算被触及的内存一次。但是，如果该内存位置在随后的区间 `I+1` 中第三次被访问，它将贡献到区间 `I+1` 的内存强度。正因如此，我们不能对时间区间进行聚合。例如，可以看到 Blender 基准测试平均每个区间大约触及 20MB。我们不能将其 150 个连续区间聚合并说 Blender 的内存占用为 `150 * 20MB = 3GB`。只有当程序从不跨区间重复内存访问时，这才成立。
 

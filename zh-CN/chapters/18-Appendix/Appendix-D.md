@@ -46,7 +46,10 @@ C:\Windows\System32\WPR.exe
 - 双击可执行文件启动程序。
 - 程序启动后，按下*停止录制*（Stop Recording）按钮停止性能分析。
 
-![Starting ETW collection with ETWController UI.](../../img/perf-tools/ETWController_Dialog.png)
+![Starting ETW collection with ETWController UI.](../../../img/perf-tools/ETWController_Dialog.png)
+
+<p align="center"><em>Starting ETW collection with ETWController UI.</em></p>
+
 
 第一次停止性能分析时会稍慢一些，因为需要为所有托管代码生成程序调试数据库文件（PDB），这是一次性操作。分析到达已停止（Stopped）状态后，可以按下*在 WPA 中打开*（Open in WPA）按钮，使用 ETWController 提供的配置文件将 ETL 文件加载到 Windows Performance Analyzer 中。CSwitch 配置文件会生成大量数据，存储在 4 GB 环形缓冲区中，允许录制 1-2 分钟，之后最旧的事件会被覆盖。有时在正确的时间点停止录制需要一点技巧。如果问题偶发，可以保持录制持续数小时，当某个事件（如文件中出现特定日志条目）触发时再停止，这可以通过轮询脚本来检测。
 
@@ -58,7 +61,10 @@ Windows 支持事件日志（Event Log）和性能计数器（Performance Counte
 
 图 WPA_MainView 展示了在 Windows Performance Analyzer（WPA）中打开的已录制 ETW 数据。WPA 视图纵向分为三个部分：*CPU 使用率（采样）*（CPU Usage (Sampled)）、*通用事件*（Generic Events）和*CPU 使用率（精确）*（CPU Usage (Precise)）。为了理解它们之间的区别，我们来深入分析。上部图表*CPU 使用率（采样）*用于识别 CPU 时间花在何处，数据通过以固定时间间隔对所有运行线程进行采样来收集。该*CPU 使用率（采样）*图表与其他性能分析工具中的*热点*（Hotspots）视图非常类似。
 
-![Windows Performance Analyzer: root causing a slow start of an application.](../../img/perf-tools/WPA_MainView.png)
+![Windows Performance Analyzer: root causing a slow start of an application.](../../../img/perf-tools/WPA_MainView.png)
+
+<p align="center"><em>Windows Performance Analyzer: root causing a slow start of an application.</em></p>
+
 
 接下来是*通用事件*（Generic Events）视图，显示鼠标点击和已捕获截图等事件。请记住，我们在 ETWController 窗口中启用了对这些事件的拦截。由于事件被放置在时间线上，可以方便地将 UI 操作与系统响应关联起来。
 
@@ -66,7 +72,10 @@ Windows 支持事件日志（Event Log）和性能计数器（Performance Counte
 
 熟悉了 WPA 界面之后，我们来观察图表。首先，可以在时间线上找到 `MouseButton` 事件 63 和 64。ETWController 将收集过程中拍摄的所有截图保存在新创建的文件夹中。性能分析数据本身保存在名为 `SlowProcessStart.etl` 的文件中，并有一个名为 `SlowProcessStart.etl.Screenshots` 的新文件夹。该文件夹包含截图和可在 Web 浏览器中查看的 `Report.html` 文件。每条已录制的键盘/鼠标交互都保存在文件名中包含事件编号的文件中，例如 `Screenshot_63.jpg`。图 ETWController_ClickScreenshot（裁剪版）显示了鼠标双击（事件 63 和 64）。鼠标指针位置标记为绿色方块，如果发生了点击事件则为红色。这样可以轻松识别鼠标点击的时间和位置。
 
-![A mouse click screenshot captured with ETWController.](../../img/perf-tools/ETWController_ClickScreenshot.png)
+![A mouse click screenshot captured with ETWController.](../../../img/perf-tools/ETWController_ClickScreenshot.png)
+
+<p align="center"><em>A mouse click screenshot captured with ETWController.</em></p>
+
 
 双击标志着 1.2 秒延迟的开始，此期间我们的应用程序在等待某些操作。在时间戳 `35.1` 处，`explorer.exe` 处于活动状态，尝试启动新应用程序。但之后它几乎没有做什么工作，应用程序也没有启动。取而代之的是，`MsMpEng.exe` 接管了执行直到时间 `35.7`。目前来看，这像是在允许已下载的可执行文件启动之前进行的防病毒扫描。但我们还不能 100% 确定 `MsMpEng.exe` 是否阻塞了新应用程序的启动。
 

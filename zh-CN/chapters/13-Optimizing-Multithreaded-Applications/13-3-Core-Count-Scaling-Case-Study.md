@@ -26,7 +26,10 @@
 
 图 ScalabilityMainChart 显示了所选基准测试的线程数可扩展性。X 轴表示线程数，Y 轴显示相对于单线程执行的加速比。加速比计算为单线程执行时间除以多线程执行时间。加速比越高，应用程序随线程数的扩展越好。
 
-![五个所选基准测试的线程数可扩展性图表。](../../img/mt-perf/ScalabilityMainChart.png)
+![五个所选基准测试的线程数可扩展性图表。](../../../img/mt-perf/ScalabilityMainChart.png)
+
+<p align="center"><em>五个所选基准测试的线程数可扩展性图表。</em></p>
+
 
 如你所见，大多数基准测试距离线性扩展还差得很远，这相当令人失望。本案例研究中扩展性最佳的基准测试——Blender，在使用 16 倍线程时仅实现了 6 倍加速比。例如，CPython 完全没有线程数扩展。当线程数超过 10 时，Clang 和 Zstd 的性能开始下降。为了理解原因，让我们深入了解每个基准测试的细节。
 
@@ -46,7 +49,10 @@ Blender 是我们测试套件中唯一能够持续扩展到系统中所有 16 �
 
 图 FrequencyThrotlingClang 显示了 Clang 工作负载的性能扩展与我们平台上使用不同线程数时 CPU 频率的叠加情况。注意，当我们同时开始使用两个 P 核时，持续频率就会下降。当你开始使用所有 16 个线程时，P 核的频率被限制到 `3.2GHz`，而 E 核运行在 `2.6GHz`。我使用 Intel VTune 的平台视图来捕获 CPU 频率，如 [IntelVtuneOverview] 所示。
 
-![在 Intel&reg; Core&trade; i7-1260P 上运行 Clang 编译时的频率降速。E 核只有在 P 核上使用了四个线程后才会变得活跃。](../../img/mt-perf/FrequencyThrotlingClang.png)
+![在 Intel&reg; Core&trade; i7-1260P 上运行 Clang 编译时的频率降速。E 核只有在 P 核上使用了四个线程后才会变得活跃。](../../../img/mt-perf/FrequencyThrotlingClang.png)
+
+<p align="center"><em>在 Intel&reg; Core&trade; i7-1260P 上运行 Clang 编译时的频率降速。E 核只有在 P 核上使用了四个线程后才会变得活跃。</em></p>
+
 
 Clang 工作负载的性能扩展临界点约在 10 个线程处。这是频率降速开始对性能产生重大影响的点，添加额外线程的收益小于在较低频率下运行的惩罚。
 
@@ -54,7 +60,10 @@ Clang 工作负载的性能扩展临界点约在 10 个线程处。这是频率�
 
 为了确认频率降速是性能下降的主要原因之一，我在平台上临时禁用了 Turbo Boost，并重复了 Blender 和 Clang 的扩展研究。禁用 Turbo Boost 时，所有核心在其基础频率下运行，P 核为 `2.1 GHz`，E 核为 `1.5 GHz`。结果如图 ScalabilityNoTurboChart 所示。如你所见，当使用所有 16 个线程且禁用 TurboBoost 时，线程数扩展几乎翻倍，对 Blender（`38%` &rarr; `69%`）和 Clang（`21%` &rarr; `41%`）都是如此。这让我们直观地了解了如果频率降速没有发生，线程数扩展会是什么样子。事实上，频率降速占据了现代系统中大量未实现性能扩展的原因。
 
-![禁用 Turbo Boost 后 Blender 和 Clang 的线程数可扩展性图表。频率降速是实现良好线程数扩展的主要障碍。](../../img/mt-perf/ScalabilityNoTurboChart.png)
+![禁用 Turbo Boost 后 Blender 和 Clang 的线程数可扩展性图表。频率降速是实现良好线程数扩展的主要障碍。](../../../img/mt-perf/ScalabilityNoTurboChart.png)
+
+<p align="center"><em>禁用 Turbo Boost 后 Blender 和 Clang 的线程数可扩展性图表。频率降速是实现良好线程数扩展的主要障碍。</em></p>
+
 
 ### Zstandard
 
@@ -72,7 +81,10 @@ Clang 工作负载的性能扩展临界点约在 10 个线程处。这是频率�
 
 使用 8 个线程压缩 Silesia 语料库的时间线如图 ZstdTimeline 所示。使用 8 个工作线程足以观察 Zstd 中的线程交互，同时使图像比所有 16 个线程活跃时的噪音更少。时间线的后半部分被截断以使图像适合页面。
 
-![使用 8 个线程压缩 Silesia 语料库的 Zstandard 时间线视图。](../../img/mt-perf/ZstdTimelineCut.png)
+![使用 8 个线程压缩 Silesia 语料库的 Zstandard 时间线视图。](../../../img/mt-perf/ZstdTimelineCut.png)
+
+<p align="center"><em>使用 8 个线程压缩 Silesia 语料库的 Zstandard 时间线视图。</em></p>
+
 
 在图像中，底部是主线程（TID 913273），顶部是八个工作线程。工作线程在压缩过程开始时创建，并被多个压缩任务重复使用。
 
@@ -111,23 +123,20 @@ CloverLeaf 是一个流体动力学工作负载。我们不会深入研究底层
 为了确定扩展不佳的根本原因，我在四个数据点中收集了 TMA 指标（见 [TMA]）：分别用 1 个、2 个、3 个和 4 个线程运行 CloverLeaf。一旦我们比较这些性能剖析的性能特征，一件事立即变得清晰：CloverLeaf 的性能受内存带宽限制。表 CloverLeaf_metrics 显示了这些剖析中突出显示使用多线程时内存带宽需求不断增加的相关指标。
 
 
-------------------------------------------------------------------------------
-                                                     1       2       3       4
-指标                                            线程   线程    线程    线程
------------------------------------------------ ------ ------- ------- -------
-TMA::Memory Bound（流水线槽位百分比）             34.6    53.7    59.0    65.4
-
-TMA::DRAM Memory Bandwidth（周期百分比）          71.7    83.9    87.0    91.3
-
-内存带宽利用率（范围，GB/s）                     20-22   25-28   27-30   27-30
-
-------------------------------------------------------------------------------
+| 指标 | 1 线程 | 2 线程 | 3 线程 | 4 线程 |
+|------|--------|--------|--------|--------|
+| TMA::Memory Bound（流水线槽位百分比） | 34.6 | 53.7 | 59.0 | 65.4 |
+| TMA::DRAM Memory Bandwidth（周期百分比） | 71.7 | 83.9 | 87.0 | 91.3 |
+| 内存带宽利用率（范围，GB/s） | 20-22 | 25-28 | 27-30 | 27-30 |
 
 表：CloverLeaf 工作负载的性能指标。
 
 从这些数字可以看出，随着我们添加更多线程，内存子系统的压力不断增加。*TMA::Memory Bound* 指标的增加表明线程越来越多地花时间等待数据，完成的有效工作减少。*DRAM Memory Bandwidth* 指标的增加进一步强调了由于接近带宽限制而损害了性能。*内存带宽利用率*（Memory Bandwidth Utilization）指标显示了 CloverLeaf 运行时总内存带宽利用率的范围。我通过查看 VTune 平台视图中的内存带宽利用率图表来捕获这些数字，如图 CloverLeafMemBandwidth 所示。
 
-![使用 3 个线程运行 CloverLeaf 的 VTune 平台视图。](../../img/mt-perf/CloverLeafMemBandwidth.png)
+![使用 3 个线程运行 CloverLeaf 的 VTune 平台视图。](../../../img/mt-perf/CloverLeafMemBandwidth.png)
+
+<p align="center"><em>使用 3 个线程运行 CloverLeaf 的 VTune 平台视图。</em></p>
+
 
 让我们将这些数字放在上下文中。我平台的最大理论内存带宽为 `38.4 GB/s`。然而，如我在 [MemLatBw] 中测量的，实际可实现的最大内存带宽为 `35 GB/s`。仅使用单线程，内存带宽利用率就达到了实际限制的 `2/3`。CloverLeaf 用三个线程完全饱和了内存带宽。即使所有 16 个线程都活跃时，*内存带宽利用率*也不超过 `30 GB/s`，这是实际限制的 `86%`。
 
@@ -141,13 +150,19 @@ TMA::DRAM Memory Bandwidth（周期百分比）          71.7    83.9    87.0   
 
 为了解决这个谜题，我从源代码构建了带调试信息的 CPython 3.12，并在使用两个线程时运行了 Intel VTune 的*线程分析*（Threading Analysis）收集。图 CPythontimeline 可视化了 Python 脚本执行时间线的一小部分。如你所见，CPU 时间在两个线程之间交替。它们工作 5 毫秒，然后让给另一个线程。事实上，如果你向左或向右滚动，你会发现它们从不同时运行。
 
-![使用两个工作线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。](../../img/mt-perf/CPythonTimelineNew.png)
+![使用两个工作线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。](../../../img/mt-perf/CPythonTimelineNew.png)
+
+<p align="center"><em>使用两个工作线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。</em></p>
+
 
 让我们尝试理解为什么两个工作线程轮流而不是一起运行。一旦线程完成其轮次，Linux 内核调度器就会切换到另一个线程，如图 CPythontimeline 中突出显示的那样。它还给出了上下文切换的原因。如果我们查看 `pthread_cond_wait.c` 源代码[^3]的第 652 行，我们会发现函数 `___pthread_cond_timedwait64`，它等待条件变量被通知。许多其他非活跃等待时段也以相同的原因等待。
 
 在*自下而上*（Bottom-up）页面（见图 CPythonBottomUp 的左侧面板），VTune 报告 `___pthread_cond_timedwait64` 函数负责大部分*非活跃同步等待时间*（Inactive Sync Wait Time）。在右侧面板中，你可以看到相应的调用堆栈。使用此调用堆栈，我们可以确定导致 `___pthread_cond_timedwait64` 函数和后续上下文切换的最常用代码路径。
 
-![使用两个线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。](../../img/mt-perf/CPythonBottomUpCombined.png)
+![使用两个线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。](../../../img/mt-perf/CPythonBottomUpCombined.png)
+
+<p align="center"><em>使用两个线程运行 Python 脚本时 VTune 的时间线视图（其他线程已过滤掉）。</em></p>
+
 
 此调用堆栈引导我们到 `take_gil` 函数，该函数负责获取全局解释器锁（Global Interpreter Lock，GIL）。GIL 通过在任何给定时间只允许一个线程运行来阻止我们并行运行工作线程的尝试，从而有效地将我们的多线程程序变成单线程程序。如果你查看 `take_gil` 函数的实现，你会发现它使用了带有 5ms 超时的条件变量等待版本。一旦超时到达，等待线程会要求持有 GIL 的线程释放它。一旦另一个线程响应请求，等待线程获取 GIL 并开始运行。它们一直保持这种角色切换，直到执行结束。
 

@@ -2,7 +2,10 @@
 
 当一条程序语句引用前一条语句的输出时，我们称这两条语句之间存在*数据依赖*。有时人们也使用*依赖链*（dependency chain）或*数据流依赖*（data flow dependencies）等术语。我们最熟悉的例子是遍历链表（见图 LinkedListChasing）。要访问节点 `N+1`，必须先解引用指针 `N->next`。对于右侧的循环，这是一种*循环*（recurrent）数据依赖，意味着它跨越了循环的多次迭代。遍历链表就是一条非常长的依赖链。
 
-![遍历链表时的数据依赖](../../img/computation-opts/LinkedListChasing.png)
+![遍历链表时的数据依赖](../../../img/computation-opts/LinkedListChasing.png)
+
+<p align="center"><em>遍历链表时的数据依赖</em></p>
+
 
 传统程序是基于顺序执行模型（sequential execution model）编写的。在该模型下，指令按照程序指定的顺序依次、原子地执行。然而，正如我们已知的，现代 CPU 并非如此设计——它们被设计为乱序、并行地执行指令，以最大化可用执行单元的利用率。
 
@@ -70,7 +73,10 @@ void particleMotion(vector<Particle> &particles,     │   fmadd  s3, s3, s4, s5
 
 如果你找到了，恭喜你。`XorShift32::val` 上存在一条循环递归依赖。为了生成下一个随机数，生成器必须先产生前一个随机数。`XorShift32::gen` 方法的下一次调用将基于前一个值生成数字。图 DepChain 可视化了有问题的循环携带依赖（loop-carry dependency）。注意，计算粒子坐标的代码（将角度转换为弧度、正弦、余弦、乘以速度）在对应的随机数准备好后立即开始执行，但不能更早。
 
-![清单 DepChain 中依赖执行的可视化](../../img/computation-opts/DepChain.png)
+![清单 DepChain 中依赖执行的可视化](../../../img/computation-opts/DepChain.png)
+
+<p align="center"><em>清单 DepChain 中依赖执行的可视化</em></p>
+
 
 计算粒子 `N` 坐标的代码不依赖于粒子 `N-1`，因此将它们向左拉以进一步重叠执行可能是有益的。你可能想问："但是这三条（或六条）指令怎么能拖累整个循环的性能呢？"确实，循环中还有许多其他"重量级"指令，如 `fmul` 和 `fmadd`。然而，它们不在关键路径上，因此可以与其他指令并行执行。由于现代 CPU 非常宽（wide），它们会同时执行来自多个迭代的指令，这使得乱序执行引擎能够有效地在循环的不同迭代中找到并行性（独立指令）。
 

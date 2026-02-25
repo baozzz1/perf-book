@@ -18,20 +18,13 @@ $ perf-tools/do.py profile --profile-mask 100 -a <your benchmark>
 
 四个基准测试的结果如表 code_footprint 所示。二进制文件和 `.text` 大小通过标准 Linux `readelf` 工具获取，而其他指标通过 `perf-tools` 收集。`non-cold code footprint [KB]`（非冷代码占用 [KB]）指标是程序至少触及一次的带有机器指令的千字节数。`non-cold code [4KB-pages]`（非冷代码 [4KB 页面]）指标告诉我们程序至少触及一次的含有机器指令的非冷 4KB 页面数量。它们共同帮助我们了解这些非冷内存位置的密集程度或稀疏程度。一旦我们深入分析数字，这一点就会变得清晰。最后，我们还展示了前端受限（Frontend Bound）百分比，这是你在 [TMA] 关于 TMA 的章节中应该已经熟悉的指标。
 
---------------------------------------------------------------------------------
-Metric                                  Clang17   Blender  CloverLeaf  Stockfish      
-                                    compilation                                
------------------------------------ ----------- --------- ----------- ----------
-Binary size [KB]                         113844    223914         672      39583
-
-`.text` size [KB]                         67309    133009         598        238
-
-non-cold code footprint [KB]               5042       313         104         99
-
-non-cold code [4KB-pages]                  6614       546         104         61
-
-Frontend Bound [%]                         52.3      29.4         5.3       25.8
---------------------------------------------------------------------------------
+| Metric | Clang17 compilation | Blender | CloverLeaf | Stockfish |
+|--------|---------------------|---------|------------|-----------|
+| Binary size [KB] | 113844 | 223914 | 672 | 39583 |
+| `.text` size [KB] | 67309 | 133009 | 598 | 238 |
+| non-cold code footprint [KB] | 5042 | 313 | 104 | 99 |
+| non-cold code [4KB-pages] | 6614 | 546 | 104 | 61 |
+| Frontend Bound [%] | 52.3 | 29.4 | 5.3 | 25.8 |
 
 表：案例研究中基准测试的代码占用情况。
 

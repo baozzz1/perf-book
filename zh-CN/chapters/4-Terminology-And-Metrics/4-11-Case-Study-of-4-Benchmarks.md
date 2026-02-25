@@ -24,72 +24,39 @@ $ ~/workspace/pmu-tools/toplev.py -m --global --no-desc -v -- <app with args>
 表 perf_metrics_case_study 提供了四个基准测试的性能指标并排比较。仅通过查看这些指标，我们就可以了解很多关于这些工作负载特性的信息。
 
 
---------------------------------------------------------------------------
-指标名称         核心        Blender     Stockfish   Clang15-   CloverLeaf
-                 类型                                自构建
----------------- ----------- ----------- ----------- ---------- ----------
-Instructions     P-core      6.02E+12    6.59E+11    2.40E+13   1.06E+12
-
-Core Cycles      P-core      4.31E+12    3.65E+11    3.78E+13   5.25E+12
-
-IPC              P-core      1.40        1.80        0.64       0.20
-
-CPI              P-core      0.72        0.55        1.57       4.96
-
-Instructions     E-core      4.97E+12    0           1.43E+13   1.11E+12
-
-Core Cycles      E-core      3.73E+12    0           3.19E+13   4.28E+12
-
-IPC              E-core      1.33        0           0.45       0.26
-
-CPI              E-core      0.75        0           2.23       3.85
-
-L1MPKI           P-core      3.88        21.38       6.01       13.44
-
-L2MPKI           P-core      0.15        1.67        1.09       3.58
-
-L3MPKI           P-core      0.04        0.14        0.56       3.43
-
-Br. Misp. Ratio  P-core      0.02        0.08        0.03       0.01
-
-Code stlb MPKI   P-core      0           0.01        0.35       0.01
-
-Ld stlb MPKI     P-core      0.08        0.04        0.51       0.03
-
-St stlb MPKI     P-core      0           0.01        0.06       0.1
-
-LdMissLat (Clk)  P-core      12.92       10.37       76.7       253.89
-
-ILP              P-core      3.67        3.65        2.93       2.53
-
-MLP              P-core      1.61        2.62        1.57       2.78
-
-Dram Bw (GB/s)   All         1.58        1.42        10.67      24.57
-
-IpCall           All         176.8       153.5       40.9       2,729
-
-IpBranch         All         9.8         10.1        5.1        18.8
-
-IpLoad           All         3.2         3.3         3.6        2.7
-
-IpStore          All         7.2         7.7         5.9        22.0
-
-IpMispredict     All         610.4       214.7       177.7      2,416
-
-IpFLOP           All         1.1         1.82E+06    286,348    1.8
-
-IpArith          All         4.5         7.96E+06    268,637    2.1
-
-IpArith Scal SP  All         22.9        4.07E+09    280,583    2.60E+09
-
-IpArith Scal DP  All         438.2       1.22E+07    4.65E+06   2.2
-
-IpArith AVX128   All         6.9         0.0         1.09E+10   1.62E+09
-
-IpArith AVX256   All         30.3        0.0         0.0        39.6
-
-IpSWPF           All         90.2        2,565       105,933    172,348
---------------------------------------------------------------------------
+| 指标名称 | 核心类型 | Blender | Stockfish | Clang15-自构建 | CloverLeaf |
+|----------|----------|---------|-----------|---------------|------------|
+| Instructions | P-core | 6.02E+12 | 6.59E+11 | 2.40E+13 | 1.06E+12 |
+| Core Cycles | P-core | 4.31E+12 | 3.65E+11 | 3.78E+13 | 5.25E+12 |
+| IPC | P-core | 1.40 | 1.80 | 0.64 | 0.20 |
+| CPI | P-core | 0.72 | 0.55 | 1.57 | 4.96 |
+| Instructions | E-core | 4.97E+12 | 0 | 1.43E+13 | 1.11E+12 |
+| Core Cycles | E-core | 3.73E+12 | 0 | 3.19E+13 | 4.28E+12 |
+| IPC | E-core | 1.33 | 0 | 0.45 | 0.26 |
+| CPI | E-core | 0.75 | 0 | 2.23 | 3.85 |
+| L1MPKI | P-core | 3.88 | 21.38 | 6.01 | 13.44 |
+| L2MPKI | P-core | 0.15 | 1.67 | 1.09 | 3.58 |
+| L3MPKI | P-core | 0.04 | 0.14 | 0.56 | 3.43 |
+| Br. Misp. Ratio | P-core | 0.02 | 0.08 | 0.03 | 0.01 |
+| Code stlb MPKI | P-core | 0 | 0.01 | 0.35 | 0.01 |
+| Ld stlb MPKI | P-core | 0.08 | 0.04 | 0.51 | 0.03 |
+| St stlb MPKI | P-core | 0 | 0.01 | 0.06 | 0.1 |
+| LdMissLat (Clk) | P-core | 12.92 | 10.37 | 76.7 | 253.89 |
+| ILP | P-core | 3.67 | 3.65 | 2.93 | 2.53 |
+| MLP | P-core | 1.61 | 2.62 | 1.57 | 2.78 |
+| Dram Bw (GB/s) | All | 1.58 | 1.42 | 10.67 | 24.57 |
+| IpCall | All | 176.8 | 153.5 | 40.9 | 2,729 |
+| IpBranch | All | 9.8 | 10.1 | 5.1 | 18.8 |
+| IpLoad | All | 3.2 | 3.3 | 3.6 | 2.7 |
+| IpStore | All | 7.2 | 7.7 | 5.9 | 22.0 |
+| IpMispredict | All | 610.4 | 214.7 | 177.7 | 2,416 |
+| IpFLOP | All | 1.1 | 1.82E+06 | 286,348 | 1.8 |
+| IpArith | All | 4.5 | 7.96E+06 | 268,637 | 2.1 |
+| IpArith Scal SP | All | 22.9 | 4.07E+09 | 280,583 | 2.60E+09 |
+| IpArith Scal DP | All | 438.2 | 1.22E+07 | 4.65E+06 | 2.2 |
+| IpArith AVX128 | All | 6.9 | 0.0 | 1.09E+10 | 1.62E+09 |
+| IpArith AVX256 | All | 30.3 | 0.0 | 0.0 | 39.6 |
+| IpSWPF | All | 90.2 | 2,565 | 105,933 | 172,348 |
 
 表：四个基准测试的性能指标。
 
@@ -111,7 +78,10 @@ IpSWPF           All         90.2        2,565       105,933    172,348
 $ ~/workspace/pmu-tools/toplev.py -m --global --no-desc -v --xlsx workload.xlsx –xchart -I 10000 -- ./clover_leaf
 ```
 
-![CloverLeaf 基准测试的性能指标图表，10 秒间隔。](../../img/terms-and-metrics/CloverMetricCharts2.png)
+![CloverLeaf 基准测试的性能指标图表，10 秒间隔。](../../../img/terms-and-metrics/CloverMetricCharts2.png)
+
+<p align="center"><em>CloverLeaf 基准测试的性能指标图表，10 秒间隔。</em></p>
+
 
 尽管与摘要中报告的平均值的偏差并不太大，但我们可以看到工作负载并不稳定。查看 P 核的 IPC 图表后，我们可以假设工作负载中没有明显的阶段，变化是由性能事件多路复用（详见 [counting]）引起的。然而，这只是一个需要被证实或证伪的假设。可能的后续步骤是通过以更高粒度运行收集来获取更多数据点（在我们的案例中为 10 秒）。绘制 L*MPKI 的图表表明所有三个指标都在其平均值附近波动，偏差不大。DRAM 带宽利用率图表显示存在对主内存压力不同的时段。最后一张图表显示了所有 CPU 核心的平均频率。从这张图表可以观察到，前 10 秒后开始出现降频（throttling）。我建议在仅根据汇总数据得出结论时要谨慎，因为汇总数据可能不能很好地反映工作负载行为。
 

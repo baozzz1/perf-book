@@ -4,7 +4,10 @@
 
 数十年来，软件程序员一直过着"轻松日子"，这要归功于摩尔定律（Moore's law）。即使软件供应商没有在代码改进上投入人力资源，他们也可以依赖新一代硬件来加速其软件产品。然而这种策略已经不再奏效。从图 50YearsProcessorTrend 中可以看出，单线程[^2]性能的增长正在放缓。从 1990 年到 2000 年，SPECint 基准测试上的单线程性能增长了约 25 到 30 倍，这主要得益于更高的 CPU 频率和改进的微架构（microarchitecture）。
 
-![微处理器 50 年趋势数据。*© K. Rupp 通过 karlrupp.net 提供的图片*。2010 年之前的原始数据由 M. Horowitz、F. Labonte、O. Shacham、K. Olukotun、L. Hammond 和 C. Batten 收集并绘制。2010-2021 年的新图表和数据由 K. Rupp 收集。](../../img/intro/50-years-processor-trend.png)
+![微处理器 50 年趋势数据。*© K. Rupp 通过 karlrupp.net 提供的图片*。2010 年之前的原始数据由 M. Horowitz、F. Labonte、O. Shacham、K. Olukotun、L. Hammond 和 C. Batten 收集并绘制。2010-2021 年的新图表和数据由 K. Rupp 收集。](../../../img/intro/50-years-processor-trend.png)
+
+<p align="center"><em>微处理器 50 年趋势数据。© K. Rupp 通过 karlrupp.net 提供的图片。2010 年之前的原始数据由 M. Horowitz、F. Labonte、O. Shacham、K. Olukotun、L. Hammond 和 C. Batten 收集并绘制。2010-2021 年的新图表和数据由 K. Rupp 收集。</em></p>
+
 
 从 2000 年到 2010 年，单线程 CPU 性能增长更为温和（增长了 4 至 5 倍）。彼时，由于功耗、散热挑战、电压缩放限制（Dennard 缩放定律[^3]）以及其他基本问题，时钟频率上限约为 4GHz。尽管时钟速度停滞不前，但架构上的进步仍在持续：更好的分支预测（branch prediction）、更深的流水线（pipelines）、更大的缓存（caches）和更高效的执行单元（execution units）。
 

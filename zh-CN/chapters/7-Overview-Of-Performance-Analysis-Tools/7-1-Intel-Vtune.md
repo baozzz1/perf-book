@@ -49,15 +49,24 @@ VTune 可以提供有关运行中进程的非常丰富的信息。如果你希�
 
 以下是 VTune 最有趣功能的一系列截图。在本示例中，我使用了 POV-Ray，这是一款用于创建 3D 图形的光线追踪器。图 VtuneHotspots 展示了内置 POV-Ray 3.7 基准测试的热点分析，该测试使用 clang14 编译器以 `-O3 -ffast-math -march=native -g` 选项编译，在搭载 Intel Alder Lake 处理器（Core i7-1260P，4 个性能核 + 8 个能效核）的系统上以 4 个工作线程运行。
 
-![VTune 对 povray 内置基准测试的热点视图。](../../img/perf-tools/VtunePovray.png)
+![VTune 对 povray 内置基准测试的热点视图。](../../../img/perf-tools/VtunePovray.png)
 
-![VTune 对 povray 内置基准测试的源代码视图。](../../img/perf-tools/VtunePovray_SourceView.png)
+<p align="center"><em>VTune 对 povray 内置基准测试的热点视图。</em></p>
+
+
+![VTune 对 povray 内置基准测试的源代码视图。](../../../img/perf-tools/VtunePovray_SourceView.png)
+
+<p align="center"><em>VTune 对 povray 内置基准测试的源代码视图。</em></p>
+
 
 在图像左侧，可以看到工作负载中热函数的列表，以及对应的 CPU 时间百分比和已退休指令数（retired instructions）。在右侧面板中，可以看到导致调用 `pov::Noise` 函数的最频繁调用栈。根据该截图，`pov::Noise` 函数有 `44.4%` 的时间是从 `pov::Evaluate_TPat` 调用的，而后者又是从 `pov::Compute_Pigment` 调用的。[^20]
 
 如果双击 `pov::Noise` 函数，将看到图 VtuneSourceView 中显示的图像。为了节省空间，只显示了最重要的列。左侧面板显示源代码以及对应每行代码的 CPU 时间。右侧显示汇编指令以及归因于它们的 CPU 时间。高亮的机器指令对应左侧面板中的第 476 行。每个面板中所有 CPU 时间百分比之和（不仅仅是可见的部分）等于归因于 `pov::Noise` 函数的总 CPU 时间，即 `26.8%`。
 
-![VTune 对 povray 内置基准测试的性能事件时间线视图。](../../img/perf-tools/VtunePovray_EventTimeline.jpg)
+![VTune 对 povray 内置基准测试的性能事件时间线视图。](../../../img/perf-tools/VtunePovray_EventTimeline.jpg)
+
+<p align="center"><em>VTune 对 povray 内置基准测试的性能事件时间线视图。</em></p>
+
 
 当你使用 VTune 分析运行在 Intel CPU 上的应用程序时，它可以收集许多不同的性能事件。为了说明这一点，我运行了一种不同的分析类型——微架构探索（Microarchitecture Exploration）。要访问原始事件计数，可以切换视图至如图 VtuneTimelineView 所示的 Hardware Events 视图。要启用视图切换，需要在 *Options* &rarr; *General* &rarr; *Show all applicable viewpoints* 中勾选选项。在图 VtuneTimelineView 的顶部附近，可以看到 *Platform* 标签页已被选中。另外两个页面也很有用：*Summary* 页面给出从 CPU 计数器收集的原始性能事件的绝对数量；*Event Count* 页面提供相同数据，并按函数进行分解。
 

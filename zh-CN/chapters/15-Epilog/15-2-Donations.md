@@ -4,8 +4,8 @@
 
   <br> 
 
-![](../../img/contributors/qr-code-paypal.png)
+![](../../../img/contributors/qr-code-paypal.png)
 
   <br> 
 
-![](../../img/contributors/qr-code-github-sponsors.png)
+![](../../../img/contributors/qr-code-github-sponsors.png)

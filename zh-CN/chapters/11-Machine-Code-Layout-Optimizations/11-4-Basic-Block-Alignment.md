@@ -20,9 +20,15 @@ void benchmark_func(int* a) {    │ 00000000004046a0 <_Z14benchmark_funcPi>:
 代码本身是合理的，但其布局并不完美（见图 Loop_default）。对应循环的指令以黄色高亮显示。粗框表示缓存行边界。缓存行长度为 64 字节。
 
 <div id="fig:LoopLayout">
-![default layout](../../img/cpu_fe_opts/LoopAlignment_Default.png)
+![default layout](../../../img/cpu_fe_opts/LoopAlignment_Default.png)
 
-![improved layout](../../img/cpu_fe_opts/LoopAlignment_Better.png)
+<p align="center"><em>default layout</em></p>
+
+
+![improved layout](../../../img/cpu_fe_opts/LoopAlignment_Better.png)
+
+<p align="center"><em>improved layout</em></p>
+
 
 代码清单 LoopAlignment 中循环的两种不同代码布局。
 </div>
