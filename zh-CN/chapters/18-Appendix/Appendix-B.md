@@ -28,7 +28,7 @@ VirtualFree(ptr, 0, MEM_RELEASE);
 
 在 Linux 操作系统上，有两种方式在应用程序中使用大页：显式大页（Explicit Huge Pages）和透明大页（Transparent Huge Pages）。
 
-### Explicit Huge Pages {.unnumbered .unlisted}
+### Explicit Huge Pages
 
 显式大页可以在系统启动时或应用程序启动前预先分配。若要永久修改，使 Linux 内核在启动时分配 128 个大页，可执行以下命令：
 
@@ -71,7 +71,7 @@ munmap(ptr, size);
 * 使用挂载的 `hugetlbfs` 文件系统的文件进行 `mmap`（[示例代码](https://github.com/torvalds/linux/blob/master/tools/testing/selftests/vm/hugepage-mmap.c)[^26]）。
 * 使用 `SHM_HUGETLB` 标志的 `shmget`（[示例代码](https://github.com/torvalds/linux/blob/master/tools/testing/selftests/vm/hugepage-shm.c)[^27]）。
 
-### Transparent Huge Pages {.unnumbered .unlisted}
+### Transparent Huge Pages
 
 要允许应用程序在 Linux 上使用透明大页（Transparent Huge Pages，THP），需确保 `/sys/kernel/mm/transparent_hugepage/enabled` 的值为 `always` 或 `madvise`。前者启用系统级 THP，后者允许用户代码控制哪些内存区域应使用 THP，从而避免消耗过多内存资源。以下是使用 `madvise` 方式的示例：
 

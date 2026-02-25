@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 重新审视代码清单 LookupBranches 右侧所示的代码示例。假设我们开始频繁收到 `[0-50)` 范围之外的数值。这将为防止越界访问 `buckets` 数组的保护分支引入大量新的预测失误。你会如何修改代码来消除这些新引入的预测失误？
 2. 使用本章讨论的技术完成以下实验任务：

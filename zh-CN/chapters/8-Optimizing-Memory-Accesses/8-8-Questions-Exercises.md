@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 完成 `perf-ninja::data_packing` 实验作业，在该作业中您需要使数据结构更加紧凑。
 2. 使用我们在 [secDTLB] 中讨论的方法完成 `perf-ninja::huge_pages_1` 实验作业。观察性能变化、`/proc/meminfo` 中的巨页分配情况，以及测量 DTLB 加载和缺失的 CPU 性能计数器。

@@ -1,6 +1,5 @@
 ## 练习
 
-\markright{Exercises}
 
 作为本书的补充材料，我开发了"Performance Ninja"——一个免费的在线课程，你可以在其中练习底层性能分析和调优。可通过以下网址访问：[https://github.com/dendibakh/perf-ninja](https://github.com/dendibakh/perf-ninja)。该课程包含一系列专注于特定性能问题的实验作业。每项实验作业所需时间从 30 分钟到 4 小时不等，取决于你的背景知识和作业本身的复杂程度。
 

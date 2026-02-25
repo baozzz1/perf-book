@@ -1,6 +1,5 @@
 ## 本章小结（Chapter Summary）
 
-\markright{Summary}
 
 * 延迟（latency）和吞吐量（throughput）通常是程序性能的最终指标。在寻求改善它们的方法时，我们需要获得更多关于应用程序如何执行的详细信息。硬件和软件都提供了可用于性能监控的数据。
 
@@ -20,4 +19,3 @@
 
 * 编译器优化报告（Compiler Optimization reports）有助于找到遗漏的编译器优化。
 
-\sectionbreak

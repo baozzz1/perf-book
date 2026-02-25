@@ -6,18 +6,18 @@
 
 在本章中，我们仅展示"CPU Counters"（CPU 计数器）仪器，这与本书最为相关。Instruments 还可以可视化 GPU、网络和磁盘活动，追踪内存分配和释放，捕获用户事件（如鼠标点击），提供功耗效率方面的洞察等等。你可以在 Instruments 的[文档](https://help.apple.com/instruments/mac/current)中了解更多相关用例。[^1]
 
-### 可以用它做什么 {.unlisted .unnumbered}
+### 可以用它做什么
 
 - 访问 Apple 处理器上的硬件性能计数器。
 - 查找程序中的热点及其调用栈。
 - 将生成的 ARM 汇编代码与源代码并排检查。
 - 针对时间线上选定的时间区间过滤数据。
 
-### 不能用它做什么 {.unlisted .unnumbered}
+### 不能用它做什么
 
 与其他基于采样的分析器类似，Xcode Instruments 具有与 VTune 和 uProf 相同的盲点。
 
-### 示例：分析 Clang 编译过程 {.unlisted .unnumbered}
+### 示例：分析 Clang 编译过程
 
 在本示例中，我将展示如何在配备 M1 处理器、macOS 13.5.1 Ventura 和 16 GB RAM 的 Apple Mac mini 上收集硬件性能计数器。我选取了 LLVM 代码库中最大的文件之一，并使用 Clang C++ 编译器 15.0 版本对其编译过程进行了分析。
 

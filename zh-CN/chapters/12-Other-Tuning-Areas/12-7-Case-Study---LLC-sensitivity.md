@@ -6,7 +6,7 @@
 
 在本案例研究中，我们使用 AMD Milan 处理器，但其他服务器处理器，如 Intel Xeon [QoSXeon] 和 Arm ThunderX [QoSThunderX]，同样包含硬件支持，允许用户控制 LLC 空间和内存读取带宽到处理器线程的分配。根据我们的测试，本节所述方法在基于 AMD Zen4 的台式机处理器（如 7950X 和 7950X3D）上同样有效。
 
-### 目标机器：AMD EPYC 7313P {.unlisted .unnumbered}
+### 目标机器：AMD EPYC 7313P
 
 我们使用了一台配备 16 核 AMD EPYC 7313P 处理器（代号 Milan）的服务器系统，该处理器由 AMD 于 2021 年推出。该系统的主要特性如表 Table experimental_setup 所示。
 
@@ -46,13 +46,13 @@ OS                    Ubuntu 22.04, kernel 5.15.0-76
 
 尽管总共有 128 MB 的 LLC（32 MB/CCX × 4 CCX），一个 CCX 的四个核心无法在其自身 32 MB LLC 之外的 LLC 中存储缓存行。由于我们将运行单线程基准测试，因此可以专注于单个 CCX。我们实验中的 LLC 大小将从 0 到 32 MB 以 2 MB 为步长变化。这与 16 路 LLC 直接相关：每禁用 16 路中的一路，LLC 大小减少 2 MB。
 
-### 工作负载：SPEC CPU2017 {.unlisted .unnumbered}
+### 工作负载：SPEC CPU2017
 
 我们使用 SPEC CPU2017 套件[^4]中的应用程序子集。SPEC CPU2017 包含一系列行业标准化工作负载，用于对处理器、内存子系统和编译器的性能进行基准测试。它被广泛用于比较高性能系统的性能及计算机架构研究。
 
 具体地，我们按照 [MemCharacterizationSPEC2006] 的建议，从 SPEC CPU2017 中选取了 15 个内存密集型基准测试程序（6 个整数型，9 个浮点型）。这些应用程序使用 GCC 6.3.1 和以下编译器选项编译：`-O3 -march=native -fno-unsafe-math-optimizations`。
 
-### 控制和监测 LLC 分配 {.unlisted .unnumbered}
+### 控制和监测 LLC 分配
 
 为了监测和执行 LLC 分配及内存*读取*带宽的限制，我们将使用 _AMD64 Technology Platform Quality of Service Extensions_ [QoSAMD]。用户可以通过模型特定寄存器（MSR，Model-Specific Registers）组来管理此 QoS 扩展。首先，必须通过写入 `PQR_ASSOC` 寄存器（MSR `0xC8F`）为线程或线程组分配资源管理标识符（RMID，resource management identifier）和服务类别（COS，class of service）。以下是硬件线程 1 的示例命令：
 
@@ -74,7 +74,7 @@ $ wrmsr -p 1 0xC92 0x00FF
 
 同样，可以限制分配给线程的内存读取带宽。这通过向特定的 MSR 寄存器写入一个无符号整数来实现，该整数以 1/8 GB/s 为增量设置最大读取带宽。感兴趣的读者欢迎阅读 [QoSAMD] 了解更多详情。
 
-### 度量指标 {.unlisted .unnumbered}
+### 度量指标
 
 量化应用程序性能的最终度量指标是执行时间（execution time）。为了分析内存层次结构对系统性能的影响，我们还将使用以下三个度量指标：1) CPI（每指令周期数，cycles per instruction），2) DMPKI（每千条指令的 LLC 需求未命中数，demand misses in the LLC per thousand instructions），3) MPKI（每千条指令的总未命中数（需求 + 预取），total misses in the LLC per thousand instructions）。虽然 CPI 与应用程序性能直接相关，但 DMPKI 和 MPKI 不一定影响性能。表 metrics 显示了从特定硬件计数器计算每个度量指标的公式。每个计数器的详细描述可在 AMD 的处理器编程参考手册 [amd_ppr] 中找到。
 
@@ -94,7 +94,7 @@ MPKI     L3 Misses[^8] (L3PMCx04) / (Retired Instructions (PMCx0C0) / 1000)
 
 本案例研究使用的方法在 [Balancer2023] 中有更详细的描述，其中还解释了我们如何配置和读取硬件计数器。重现实验所需的代码和信息可在以下公开仓库中找到：[https://github.com/agusnt/BALANCER](https://github.com/agusnt/BALANCER)。
 
-### 结果 {.unlisted .unnumbered}
+### 结果
 
 我们在系统中*单独*运行一组 SPEC CPU2017 基准测试程序，每次只运行一个实例和单个硬件线程。我们在 LLC 大小从 0 到 32 MB 以 2 MB 为步长变化的过程中重复这些运行。
 

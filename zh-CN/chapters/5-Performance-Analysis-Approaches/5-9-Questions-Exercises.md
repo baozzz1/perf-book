@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 在以下场景中，你会使用哪种性能分析方法？
 - 场景 1：客户支持团队报告了一个客户问题：升级到应用程序的新版本后，某个操作的性能下降了 10%。

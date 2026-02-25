@@ -2,7 +2,7 @@
 
 我们在 [ETW] 中介绍了 ETW（Event Tracing for Windows，Windows 事件追踪）。本节将在此基础上继续探讨记录和分析 ETW 的工具。为了展示这些工具的使用方式，我们通过一个调试程序启动缓慢的案例研究来进行说明。
 
-### Tools to Record ETW traces {.unlisted .unnumbered}
+### Tools to Record ETW traces
 
 以下是可用于捕获 ETW 追踪数据的工具列表：
 
@@ -14,19 +14,19 @@
 - `ETWController`：[^4] 一款录制工具，除 ETW 数据外还能录制键盘输入和截图。这款由 Alois Kraus 开发的开源应用程序还支持在两台机器上同时进行分布式性能分析。
 - `UIForETW`：[^6] 由 Bruce Dawson 开发的开源应用程序，是 `xperf` 的封装工具，提供专门针对 Google Chrome 问题录制数据的选项，也可录制键盘和鼠标输入。
 
-### Tools to View and Analyze ETW traces {.unlisted .unnumbered}
+### Tools to View and Analyze ETW traces
 
 - `Windows Performance Analyzer`（WPA）：查看 ETW 数据最强大的 UI 工具。WPA 可以可视化并叠加展示磁盘、CPU、GPU、网络、内存、进程等多种数据源，帮助全面了解系统行为。虽然 UI 功能强大，但对初学者而言可能较为复杂。WPA 支持插件以处理来自其他数据源（不仅限于 ETW 追踪）的数据，可以导入由 Linux perf、LTTNG、Perfetto 等工具生成的 Linux/Android[^8] 性能分析数据，以及多种日志文件格式：dmesg、Cloud-Init、WaLinuxAgent 和 AndroidLogcat。
 - `ETWAnalyzer`：[^5] 读取 ETW 数据并生成聚合摘要 JSON 文件，可在命令行进行查询、过滤、排序，或导出为 CSV 文件。
 - `PerfView`：主要用于排查 .NET 应用程序问题。针对垃圾回收（Garbage Collection）和 JIT 编译所触发的 ETW 事件会被解析，并以报告或 CSV 数据的形式方便地呈现。
 
-### Case Study - Slow Program Start {.unlisted .unnumbered}
+### Case Study - Slow Program Start
 
 现在我们来看一个使用 ETWController 捕获 ETW 追踪数据并用 WPA 可视化分析的示例。
 
 **问题描述**：在 Windows 资源管理器中双击一个已下载的可执行文件时，启动过程存在明显延迟。似乎有什么原因导致进程启动变慢。这可能是什么原因？磁盘慢？
 
-#### Setup {.unlisted .unnumbered}
+#### Setup
 
 - 下载 ETWController 以录制 ETW 数据和截图。
 - 下载最新的 Windows 11 Performance Toolkit[^1] 以便用 WPA 查看数据。确保较新的 Win 11 版 `WPR.exe` 在路径中排在前面，方法是在系统环境变量对话框中将 WPT 安装文件夹移至 `C:\\Windows\\system32` 之前。配置完成后应如下所示：
@@ -37,7 +37,7 @@ C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\WPR.exe
 C:\Windows\System32\WPR.exe
 ```
 
-#### Capture traces {.unlisted .unnumbered}
+#### Capture traces
 
 - 启动 ETWController。
 - 选择 CSwitch 配置文件以追踪线程等待时间及其他默认录制设置。确保勾选*录制鼠标点击*（Record mouse clicks）和*循环截图*（Take cyclic screenshots）复选框（见图 ETWController_Dialog），这样之后可以借助截图导航至慢速位置。
@@ -52,7 +52,7 @@ C:\Windows\System32\WPR.exe
 
 Windows 支持事件日志（Event Log）和性能计数器（Performance Counter）触发器，当性能计数器达到阈值或特定事件写入事件日志时可以启动脚本。如果需要更复杂的停止触发条件，可以使用 PerfView；它允许定义性能计数器阈值，该阈值必须达到并持续 `N` 秒才会停止性能分析，从而避免随机峰值触发误报。
 
-#### Analysis in WPA {.unlisted .unnumbered}
+#### Analysis in WPA
 
   <br>
 

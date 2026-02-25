@@ -4,7 +4,7 @@
 
 本节内容主要针对 Linux 操作系统。建议读者自行搜索其他操作系统的配置说明。
 
-## Dynamic Frequency Scaling {.unnumbered .unlisted}
+## Dynamic Frequency Scaling
 
 [动态频率缩放](https://en.wikipedia.org/wiki/Dynamic_frequency_scaling)[^11]（Dynamic Frequency Scaling，DFS）是一种通过在系统运行高负载任务时自动提高 CPU 工作频率来提升系统性能的技术。以 DFS 实现为例，Intel CPU 具有 Turbo Boost 功能，AMD CPU 则采用 Turbo Core 功能。
 
@@ -38,7 +38,7 @@ echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
 # AMD
 echo 0 > /sys/devices/system/cpu/cpufreq/boost
 ```
-## Simultaneous Multithreading {.unnumbered .unlisted}
+## Simultaneous Multithreading
 
 许多现代 CPU 核心支持同步多线程（Simultaneous Multithreading，参见 [SMT]）。SMT 可以在 BIOS 中永久禁用。若要在 Linux 系统上以编程方式禁用 SMT，需要 root 权限。CPU 线程的兄弟对（sibling pairs）可以在以下文件中查找：
 
@@ -78,7 +78,7 @@ $ cat /sys/devices/system/cpu/cpu0/topology/thread_siblings_list
 
 此外，`lscpu --all --extended` 命令对于查看兄弟线程非常有帮助。
 
-## Scaling Governor {.unnumbered .unlisted}
+## Scaling Governor
 
 Linux 内核可以出于不同目的控制 CPU 频率，例如节省电能。在此情况下，调频调节器（scaling governor）可能会决定降低 CPU 频率。为了进行性能测量，建议将调频调节器策略设置为 `performance`，以避免低于标称频率运行。以下是如何为所有核心进行设置：
 
@@ -86,7 +86,7 @@ Linux 内核可以出于不同目的控制 CPU 频率，例如节省电能。在
 echo performance | sudo tee /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
 ```
 
-## CPU Affinity {.unnumbered .unlisted}
+## CPU Affinity
 
 [处理器亲和性](https://en.wikipedia.org/wiki/Processor_affinity)[^8]（Processor affinity）可以将进程绑定到特定的 CPU 核心。在 Linux 中，可以使用 [`taskset`](https://linux.die.net/man/1/taskset)[^9] 工具实现。
 
@@ -125,7 +125,7 @@ $ start /wait /b /affinity 0xC0 myapp.exe
 
 在 macOS 上，由于操作系统不提供相关 API，无法将线程固定到特定核心。
 
-## Process Priority {.unnumbered .unlisted}
+## Process Priority
 
 在 Linux 中，可以使用 `nice` 工具提高进程优先级。通过提高优先级，进程获得更多 CPU 时间，调度器（scheduler）相比普通优先级进程更倾向于调度它。优先级范围（niceness）从 `-20`（最高优先级）到 `19`（最低优先级），默认值为 `0`。
 

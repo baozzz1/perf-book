@@ -1,6 +1,5 @@
-## 本章小结 {.unlisted .unnumbered}
+## 本章小结
 
-\markright{Summary}
 
 * 我们快速概述了三个主要平台上最流行的工具：Linux、Windows 和 macOS。根据 CPU 厂商的不同，性能分析工具的选择也会有所不同。对于搭载 Intel 处理器的系统，我们推荐使用 VTune；对于搭载 AMD 处理器的系统，使用 uProf；在 Apple 平台上使用 Xcode Instruments。
 * Linux perf 可能是 Linux 上使用最频繁的性能分析工具。它支持所有主要 CPU 厂商的处理器。它没有图形界面。然而，有工具可以可视化 `perf` 的性能分析数据。
@@ -11,4 +10,3 @@
 
 [^1]: KUtrace - [https://github.com/dicksites/KUtrace](https://github.com/dicksites/KUtrace)
 
-\sectionbreak

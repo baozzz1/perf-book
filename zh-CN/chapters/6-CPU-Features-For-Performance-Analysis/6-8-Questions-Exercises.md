@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 列举 TMA 性能方法论中的四个第 1 层分类。
 2. 基于硬件的事件采样有哪些优点？

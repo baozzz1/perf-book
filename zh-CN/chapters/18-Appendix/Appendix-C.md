@@ -2,7 +2,7 @@
 
 Intel 处理器追踪（Intel Processor Traces，PT）是一项 CPU 功能，它以高度压缩的二进制格式记录程序执行过程中的数据包，可用于重建每条指令的执行流程和时间戳。PT 的覆盖范围广、开销相对较小[^1]，通常低于 `5%`。其主要用途是事后分析（postmortem analysis）和定位性能毛刺（performance glitches）的根本原因。
 
-## Workflow {.unnumbered .unlisted}
+## Workflow
 
 与采样技术（sampling techniques）类似，PT 无需对源代码进行任何修改。收集追踪信息只需在支持 PT 的工具下运行程序即可。启用 PT 并启动基准测试后，分析工具开始将 PT 数据包写入 DRAM。
 
@@ -20,7 +20,7 @@ Intel 处理器追踪（Intel Processor Traces，PT）是一项 CPU 功能，它
 
 黄色高亮的指令是程序运行时实际执行的指令。注意，这是对程序执行的*精确*重建，没有跳过任何指令。之后可以利用调试信息将汇编指令映射回源代码，从而获得逐行执行的源代码日志。
 
-## Timing Packets {.unnumbered .unlisted}
+## Timing Packets
 
 借助 Intel PT，不仅可以追踪执行流程，还可以追踪时序信息（timing information）。除了保存跳转目标，PT 还可以发出时序数据包（timing packets）。图 PT_timings 展示了如何利用时序数据包为指令恢复时间戳。与前面的示例类似，首先看到 `JNZ` 未发生跳转（`NT`），因此将其及其上方的所有指令的时间戳更新为 0ns。接着看到 2ns 的时序更新，以及 `JE` 发生跳转，因此将 `JE` 及其上方（`JNZ` 下方）的所有指令时间戳更新为 2ns。之后有一个间接调用（`CALL(edx)`），但没有附带时序数据包，因此不更新时间戳。然后看到经过了 100ns，`JB` 未发生跳转，因此将其上方的所有指令时间戳更新为 102ns。
 
@@ -28,7 +28,7 @@ Intel 处理器追踪（Intel Processor Traces，PT）是一项 CPU 功能，它
 
 图 PT_timings 所示示例中，指令数据（控制流）是完全精确的，但时序信息精度稍低。显然，`CALL(edx)`、`TEST` 和 `JB` 指令并非同时发生，但我们没有更精确的时序信息。时间戳使我们能够将程序的时间区间与系统中的其他事件对齐，并且便于与挂钟时间（wall clock time）进行比较。某些实现中可以通过周期精确模式（cycle-accurate mode）进一步提升追踪时序精度，该模式下硬件会记录相邻正常数据包之间的时钟周期数（详见 [IntelOptimizationManual]）。
 
-## Collecting and Decoding Traces {.unnumbered .unlisted}
+## Collecting and Decoding Traces
 
 使用 Linux `perf` 工具可以轻松收集 Intel PT 追踪数据：
 
@@ -74,7 +74,7 @@ timestamp       srcline   instruction      srccode
 
 这里只展示了长执行日志中的一小片段。在这份日志中，我们拥有程序运行时*每条*已执行指令的追踪信息，可以逐步观察程序所做的每一步操作。这是进行功能分析和性能分析的强有力基础。
 
-## Use Cases {.unnumbered .unlisted}
+## Use Cases
 
 1. **分析性能毛刺**：由于 PT 捕获了完整的指令流，可以分析应用程序在无响应的短暂时间内发生了什么。更详细的示例可以在 Easyperf 博客的[文章](https://easyperf.net/blog/2019/09/06/Intel-PT-part3)[^2]中找到。
 2. **事后调试（Postmortem debugging）**：PT 追踪数据可以被 `gdb` 等传统调试器重放。此外，PT 提供调用栈（call stack）信息，即便调用栈损坏也*始终*有效。[^3] PT 追踪数据可以在远程机器上一次性收集，然后离线分析。这在问题难以复现或系统访问受限时尤为有用。
@@ -83,7 +83,7 @@ timestamp       srcline   instruction      srccode
    - 借助时间戳，可以计算在自旋锁（spin lock）等待尝试期间花费了多少时间等。
    - 通过检测特定指令模式进行安全防护。
 
-## Disk Space and Decoding Time {.unnumbered .unlisted}
+## Disk Space and Decoding Time
 
 即使考虑到追踪数据的压缩格式，已编码数据仍可能占用大量磁盘空间。通常每条指令不足 1 字节，但考虑到 CPU 执行指令的速度，这仍然相当可观。根据工作负载的不同，CPU 以 100 MB/s 的速度编码 PT 数据是很常见的。解码后的追踪数据量可能达到其十倍之多（约 1 GB/s）。这使得 PT 不适合用于长时间运行的工作负载。但对于短时间运行来说是可行的，即便是大型工作负载也可以。在这种情况下，用户可以在毛刺发生期间临时附加到运行中的进程。或者使用循环缓冲区（circular buffer），新追踪数据会覆盖旧数据，即始终保留最近约 10 秒的追踪数据。
 
@@ -91,11 +91,11 @@ timestamp       srcline   instruction      srccode
 
 解码 PT 追踪数据可能需要较长时间，因为它必须跟随二进制文件的反汇编指令并重建执行流程。在 Intel Core i5-8259U 机器上，对于运行 7 毫秒的工作负载，编码后的 PT 追踪数据约占 1 MB 磁盘空间。使用 `perf script -F time,ip,sym,symoff,insn` 解码该追踪数据需要约 20 秒[^4]，输出结果占用约 1.3 GB 磁盘空间。
 
-## Tools {.unnumbered .unlisted}
+## Tools
 
 除 Linux perf 外，还有其他几款工具支持 Intel PT。首先，Intel VTune Profiler 有使用 Intel PT 的*异常检测*（Anomaly Detection）分析类型。另一款值得一提的流行工具是 magic-trace[^5]，可收集并显示进程的高分辨率追踪数据。
 
-## Intel PT References and links {.unnumbered .unlisted}
+## Intel PT References and links
 
 * Intel® 64 and IA-32 Architectures Software Developer Manuals [IntelOptimizationManual].
 * Whitepaper "Hardware-assisted instruction profiling and latency detection" [IntelPTPaper].

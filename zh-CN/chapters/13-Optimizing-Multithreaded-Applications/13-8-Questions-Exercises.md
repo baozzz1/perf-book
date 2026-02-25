@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 完成 `perf-ninja::false_sharing` 实验作业。
 2. 多线程与多进程应用程序各有哪些优势？

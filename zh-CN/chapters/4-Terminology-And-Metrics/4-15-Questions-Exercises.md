@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. CPU 核心时钟与参考时钟有什么区别？
 2. 已退休指令与已执行指令有什么区别？

@@ -2,11 +2,11 @@
 
 [uProf](https://www.amd.com/en/developer/uprof.html) 是 AMD 开发的一款性能分析工具，用于监控运行在 AMD 处理器上的应用程序的性能。虽然 uProf 也可以在 Intel 处理器上使用，但届时只能使用与 CPU 无关的功能。该分析工具可免费下载，支持在 Windows、Linux 和 FreeBSD 上使用。AMD uProf 可用于在多种虚拟机（VM）上进行性能分析，包括 Microsoft Hyper-V、KVM、VMware ESXi 和 Citrix Xen，但并非所有功能在所有虚拟机上都可用。此外，uProf 支持分析多种语言编写的应用程序，包括 C、C++、Java、.NET/CLR。
 
-### 如何配置 {.unlisted .unnumbered}
+### 如何配置
 
 在 Linux 上，uProf 使用 Linux perf 进行数据收集。在 Windows 上，uProf 使用其自有的采样驱动程序，该驱动程序在安装 uProf 时自动安装，无需额外配置。AMD uProf 同时支持命令行界面（CLI）和图形界面。CLI 界面需要两个独立步骤——采集（collect）和报告（report），与 Linux perf 类似。
 
-### 可以用它做什么 {.unlisted .unnumbered}
+### 可以用它做什么
 
 - 查找热点：函数、语句、指令。
 - 监控各种硬件性能事件并定位这些事件发生的代码行。
@@ -16,11 +16,11 @@
 
 此外，uProf 还可以监控 Linux 上的各种操作系统事件：线程状态、线程同步、系统调用、缺页错误（page faults）等。可以使用它分析 OpenMP 应用程序以检测线程不均衡，以及分析 MPI[^3] 应用程序以检测 MPI 集群各节点之间的负载不均衡。有关 uProf 各种功能的更多详细信息，请参阅[用户指南](https://www.amd.com/en/developer/uprof.html#documentation)[^1]。
 
-### 不能用它做什么 {.unlisted .unnumbered}
+### 不能用它做什么
 
 由于该工具的采样特性，它最终会错过持续时间非常短的事件。报告的样本是统计估算数字，在大多数情况下足以分析性能，但并非事件的精确计数。
 
-### 示例 {.unlisted .unnumbered}
+### 示例
 
 为了展示 AMD uProf 工具的外观和使用感受，我们在运行 Windows 11、配备 64 GB RAM 的 AMD Ryzen 9 7950X 上，运行了来自 [Scimark2](https://math.nist.gov/scimark2/index.html)[^2] 基准测试的稠密 LU 矩阵分解（dense LU matrix factorization）组件。
 

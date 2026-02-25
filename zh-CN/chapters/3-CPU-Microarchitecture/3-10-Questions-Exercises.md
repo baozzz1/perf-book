@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 描述流水线、乱序执行和推测执行。
 2. 寄存器重命名如何帮助加速执行？

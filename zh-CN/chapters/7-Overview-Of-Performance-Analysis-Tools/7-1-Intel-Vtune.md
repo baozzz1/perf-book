@@ -6,7 +6,7 @@ VTune 可以在 Intel 和 AMD 系统上使用。但是，高级的基于硬件�
 
 截至 2023 年初，VTune 可作为独立工具或作为 Intel oneAPI Base Toolkit 的一部分免费获取。[^1]
 
-### 如何配置 {.unlisted .unnumbered}
+### 如何配置
 
 在 Linux 上，VTune 可以使用两种数据采集器：Linux perf 和 VTune 自己的驱动程序 SEP。前者用于用户模式采样，但如果想进行高级分析，则需要构建并安装 SEP 驱动程序，这并不太难。
 
@@ -27,7 +27,7 @@ $ sudo ./insmod-sep -r -g vtune
 
 在 Windows 上，安装 VTune 后无需任何额外配置。收集硬件性能事件需要管理员权限。
 
-### 可以用它做什么 {.unlisted .unnumbered}
+### 可以用它做什么
 
 - 查找热点（hotspots）：函数、循环、语句。
 - 监控各种 CPU 特定的性能事件，例如分支预测错误（branch mispredictions）和 L3 缓存缺失（L3 cache misses）。
@@ -38,14 +38,14 @@ $ sudo ./insmod-sep -r -g vtune
 
 VTune 可以提供有关运行中进程的非常丰富的信息。如果你希望提升应用程序的整体性能，它是合适的工具。VTune 始终提供一段时间内的聚合数据，因此可用于找出"平均情况"的优化机会。
 
-### 不能用它做什么 {.unlisted .unnumbered}
+### 不能用它做什么
 
 - 分析持续时间极短的执行异常。
 - 观察系统范围内复杂的软件动态。
 
 由于该工具的采样特性，它最终会错过持续时间非常短的事件（例如，亚微秒级别）。
 
-### 示例 {.unlisted .unnumbered}
+### 示例
 
 以下是 VTune 最有趣功能的一系列截图。在本示例中，我使用了 POV-Ray，这是一款用于创建 3D 图形的光线追踪器。图 VtuneHotspots 展示了内置 POV-Ray 3.7 基准测试的热点分析，该测试使用 clang14 编译器以 `-O3 -ffast-math -march=native -g` 选项编译，在搭载 Intel Alder Lake 处理器（Core i7-1260P，4 个性能核 + 8 个能效核）的系统上以 4 个工作线程运行。
 

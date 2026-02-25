@@ -1,6 +1,6 @@
-# 前言 {.unnumbered .unlisted}
+# 前言
 
-## 关于作者 {.unlisted .unnumbered}
+## 关于作者
 
 Denis Bakhvalov 是 Intel 的一名性能工程师（performance engineer），负责优化生产级应用程序和基准测试。在此之前，他曾在 Intel 编译器团队工作，参与为多种架构开发 C++ 编译器。Denis 于 2008 年开始其软件开发职业生涯，在一家大型 C++ 企业财务应用公司工作。在加入 Intel 之前，他在诺基亚（Nokia）工作了三年，从事嵌入式软件的编写。
 
@@ -12,7 +12,7 @@ Denis Bakhvalov 是 Intel 的一名性能工程师（performance engineer），�
 * X（前 Twitter）：[\@dendibakh](https://x.com/dendibakh)
 * LinkedIn：[\@dendibakh](https://www.linkedin.com/in/dendibakh/)
 
-## 作者寄语 {.unlisted .unnumbered}
+## 作者寄语
 
 我写这本书只有一个简单的目标：帮助软件开发者更好地理解其应用程序的性能。我深知底层性能工程对于初学者乃至有经验的开发者来说有多么困难。我还记得自己刚接触性能分析的那段日子——面对一堆陌生的指标，试图将无法匹配的数据拼凑在一起，不知所措。经过多年的摸索，终于有那么一刻"豁然开朗"，所有拼图都拼在了一起……尽管有时我仍然在和同样的问题打交道。
 
@@ -34,7 +34,7 @@ Denis Bakhvalov 是 Intel 的一名性能工程师（performance engineer），�
 
 本书的 PDF 版本和"Performance Ninja"在线课程均免费提供。这是我回馈社区的方式。
 
-## 目标读者 {.unlisted .unnumbered}
+## 目标读者
 
 如果你正在开发对性能要求极高的应用程序，那么这本书非常适合你。它主要面向高性能计算（HPC, High-Performance Computing）、人工智能（AI）、游戏开发、数据中心应用程序（如 Meta、Google 等公司的应用）、高频交易（HFT, High-Frequency Trading）以及其他性能优化价值被广泛认可的行业的软件开发者。
 
@@ -46,4 +46,3 @@ Denis Bakhvalov 是 Intel 的一名性能工程师（performance engineer），�
 
 我将在我的博客上发布本书的勘误和其他相关信息，网址如下：[https://easyperf.net/blog/2024/11/11/Book-Updates-Errata](https://easyperf.net/blog/2024/11/11/Book-Updates-Errata)。
 
-\sectionbreak

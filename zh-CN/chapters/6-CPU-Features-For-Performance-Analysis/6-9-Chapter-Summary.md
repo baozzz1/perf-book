@@ -1,6 +1,5 @@
-## 本章总结 {.unlisted .unnumbered}
+## 本章总结
 
-\markright{Summary}
 
 * 现代处理器提供了增强性能分析的特性。利用这些特性，可以大大简化发现底层优化机会的过程。
 * 自顶向下微架构分析（Top-down Microarchitecture Analysis，TMA）方法论是一种用于识别程序对 CPU 微架构低效使用的强大技术，即使是经验不足的开发者也易于上手。TMA 是一个迭代过程，由多个步骤组成，包括描述工作负载特征和精确定位源代码中发生瓶颈的位置。我们建议将 TMA 作为每次底层调优工作的起点之一。
@@ -10,4 +9,3 @@
 
 [^2]: Arm CoreSight - [https://developer.arm.com/ip-products/system-ip/coresight-debug-and-trace](https://developer.arm.com/ip-products/system-ip/coresight-debug-and-trace)
 
-\sectionbreak

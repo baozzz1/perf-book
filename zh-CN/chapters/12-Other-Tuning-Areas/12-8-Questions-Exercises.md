@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 完成 Performance Ninja 在线课程中的以下实验任务：
 - `perf-ninja::mem_order_violation_1`

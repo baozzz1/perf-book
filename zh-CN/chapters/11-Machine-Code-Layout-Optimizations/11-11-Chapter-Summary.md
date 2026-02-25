@@ -1,6 +1,5 @@
-## 本章小结 {.unlisted .unnumbered}
+## 本章小结
 
-\markright{Summary}
 
 CPU 前端优化摘要如表 CPU_FE_OPT 所示。
 
@@ -33,4 +32,3 @@ reorder    functions         utilization   hot functions
 * 代码布局改进常常被低估和忽视。I-cache 和 ITLB 缺失等 CPU 前端性能问题占据了大量浪费的周期，尤其对于代码量庞大的应用程序。但即使是中小型应用程序也可以从优化机器码布局中受益。
 * 如果能为应用程序提供一组典型使用场景，通常最好的选择是使用 LTO、PGO、BOLT 及类似工具来改善代码布局。对于大型应用程序，这是唯一实用的选择。
 
-\sectionbreak

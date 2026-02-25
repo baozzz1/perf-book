@@ -1,6 +1,5 @@
-## 问题与练习 {.unlisted .unnumbered}
+## 问题与练习
 
-\markright{Questions and Exercises}
 
 1. 使用本章讨论的技术解决以下实验任务：
 - `perf-ninja::function_inlining_1` 
