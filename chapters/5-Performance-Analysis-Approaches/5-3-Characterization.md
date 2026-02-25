@@ -53,13 +53,17 @@ Multiplexing between 8 performance events with only 4 PMCs available.
 </div>
 
 With multiplexing, an event is not measured all the time, but rather only during a portion of time. At the end of the run, a profiling tool needs to scale the raw count based on the total time enabled:
+
 $$
 final~count = raw~count \times ( time~running / time~enabled )
 $$
+
 Let's take Figure Multiplexing2 as an example. Say, during profiling, we were able to measure an event from group 1 during three time intervals. Each measurement interval lasted 100ms (`time enabled`). The program running time was 500ms (`time running`). The total number of events for this counter was measured as 10,000 (`raw count`). So, the final count needs to be scaled as follows:
+
 $$
 final~count = 10,000 \times ( 500ms / ( 100ms \times 3) ) = 16,666
 $$
+
 This provides an estimate of what the count would have been had the event been measured during the entire run. It is very important to understand that this is still an estimate, not an actual count. Multiplexing and scaling can be used safely on steady workloads that execute the same code during long time intervals. However, if the program regularly jumps between different hotspots, i.e., has different phases, there will be blind spots that can introduce errors during scaling. To avoid scaling, you can reduce the number of events to no more than the number of physical PMCs available. However, you'll have to run the benchmark multiple times to measure all the events.
 
 [^4]: VMware PMCs - [https://www.vladan.fr/what-are-vmware-virtual-cpu-performance-monitoring-counters-vpmcs/](https://www.vladan.fr/what-are-vmware-virtual-cpu-performance-monitoring-counters-vpmcs/)

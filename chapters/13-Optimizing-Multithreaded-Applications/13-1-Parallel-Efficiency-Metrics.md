@@ -7,6 +7,7 @@ Let's start by introducing a few metrics that are important for analyzing the pe
 This metric represents how efficiently an application utilizes the available CPUs. It shows the percent of average CPU utilization by all logical CPUs on the system. It is based only on the *Effective time* and does not include the overhead introduced by the parallel runtime system[^11] and Spin time. An *Effective CPU utilization* of 100% means that your application keeps all the logical CPU cores busy for the entire time that it runs.
 
 For a specified time interval `T`, *Effective CPU Utilization* can be calculated as
+
 $$
 \textrm{Effective CPU Utilization} = \frac{\sum_{i=1}^{\textrm{ThreadCount}}\textrm{Effective CPU Time(T,i)}}{\textrm{T}~\times~\textrm{ThreadCount}}
 $$

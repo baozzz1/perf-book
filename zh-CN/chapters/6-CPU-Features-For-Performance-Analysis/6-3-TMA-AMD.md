@@ -8,6 +8,7 @@
 
 以下是我用于获取 L1 和 L2 流水线利用率指标的命令。输出已经过裁剪，部分统计数据被省略以减少干扰。
 
+
 ```bash
 $ perf stat -M PipelineL1,PipelineL2 -- ./cryptest.exe b1 10
  0.0 %  bad_speculation_mispredicts        (20.08%) 
@@ -24,13 +25,14 @@ $ perf stat -M PipelineL1,PipelineL2 -- ./cryptest.exe b1 10
  6.1 %  retiring_microcode                 (19.99%)
 ```
 
+
 输出中方括号内的数字表示某个指标被监控的运行时间百分比。可以看到，由于复用（multiplexing），每个指标仅被监控了约 20% 的时间。在我们的案例中，由于 SHA256 行为一致，这很可能不是问题，但情况并不总是如此。为了最小化复用的影响，可以在单次运行中收集有限的指标集，例如 `perf stat -M frontend_bound,backend_bound`。
 
 上述流水线利用率指标的描述可在 [AMDUprofManual] 中找到。通过查看指标，可以看到 SHA256 中不存在分支预测错误（`bad_speculation` 为 0%）。可用分发槽位（dispatch slot）中只有 26.3% 被使用（`retiring`），这意味着剩余 73.7% 因前端和后端停顿而被浪费。
 
-高级密码学指令并不简单，因此在内部它们会被分解为更小的片段（$\mu$ops）。一旦处理器遇到这类指令，就会从微码（microcode）中获取其对应的 $\mu$ops。与常规指令解码器相比，从微码序列器（microcode sequencer）获取微操作的带宽更低，这可能成为性能瓶颈的来源。Crypto++ SHA256 实现大量使用了 `SHA256MSG2`、`SHA256RNDS2` 等指令，根据 [uops.info](https://uops.info/table.html)[^2] 网站的数据，这些指令由多个 $\mu$ops 组成。
+高级密码学指令并不简单，因此在内部它们会被分解为更小的片段（μops）。一旦处理器遇到这类指令，就会从微码（microcode）中获取其对应的 μops。与常规指令解码器相比，从微码序列器（microcode sequencer）获取微操作的带宽更低，这可能成为性能瓶颈的来源。Crypto++ SHA256 实现大量使用了 `SHA256MSG2`、`SHA256RNDS2` 等指令，根据 [uops.info](https://uops.info/table.html)[^2] 网站的数据，这些指令由多个 μops 组成。
 
-`retiring_microcode` 指标表明，6.1% 的分发槽位被最终退休的微码操作所使用。与其兄弟指标 `retiring_fastpath` 相比，大约每 4 条指令中就有 1 条是微码操作。再看 `frontend_bound_bandwidth` 指标，会发现 6.1% 的分发槽位因 CPU 前端的带宽瓶颈而未被使用。这表明有 6.1% 的分发槽位被浪费，原因是微码序列器无法提供足够的 $\mu$ops，而后端本可以消费这些操作。在本例中，`retiring_microcode` 和 `frontend_bound_bandwidth` 指标紧密关联，但它们数值相等只是巧合。
+`retiring_microcode` 指标表明，6.1% 的分发槽位被最终退休的微码操作所使用。与其兄弟指标 `retiring_fastpath` 相比，大约每 4 条指令中就有 1 条是微码操作。再看 `frontend_bound_bandwidth` 指标，会发现 6.1% 的分发槽位因 CPU 前端的带宽瓶颈而未被使用。这表明有 6.1% 的分发槽位被浪费，原因是微码序列器无法提供足够的 μops，而后端本可以消费这些操作。在本例中，`retiring_microcode` 和 `frontend_bound_bandwidth` 指标紧密关联，但它们数值相等只是巧合。
 
 大多数周期停顿在 CPU 后端（`backend_bound`），但仅有 1.7% 的周期在等待内存访问时停顿（`backend_bound_memory`）。因此，我们知道该基准测试主要受机器计算能力的限制。正如你将在本书第二部分了解到的，这可能与数据流依赖（data flow dependency）或某些密码学操作的执行吞吐量（execution throughput）有关。与传统的 `ADD`、`SUB`、`CMP` 等指令相比，这些指令的频率较低，因此通常只能在单个执行单元上运行。大量此类操作可能使该特定单元的执行吞吐量饱和。进一步分析应包括仔细查看源代码和生成的汇编代码、检查执行端口利用率、查找数据依赖关系等。
 

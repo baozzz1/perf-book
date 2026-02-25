@@ -105,4 +105,4 @@
 
 **TSC** Time Stamp Counter（时间戳计数器）
 
-**$\mu$op** MicroOperation（微操作）
+**μop** MicroOperation（微操作）

@@ -16,7 +16,7 @@ x86 和 ARM 在内存页面大小（memory page size）上也存在差异。x86 
 * 性能或能耗差异并非由 ISA 差异产生，而是由微架构实现决定的。[RISCvsCISC2013]
 * ISA 对所执行指令的数量和类型没有显著影响。[RISCVvsAArch642023] [RISCvsCISC2013]
 * CISC 代码的代码密度并不高于 RISC 代码。[CodeDensityCISCvsRISC]
-* ISA 的开销可以通过微架构实现有效缓解。例如，$\mu$op 缓存（$\mu$op cache）可以最小化解码开销；指令缓存（instruction cache）可以最小化代码密度的影响。[RISCvsCISC2013] [ChipsAndCheesex86]
+* ISA 的开销可以通过微架构实现有效缓解。例如，μop 缓存（μop cache）可以最小化解码开销；指令缓存（instruction cache）可以最小化代码密度的影响。[RISCvsCISC2013] [ChipsAndCheesex86]
 
 尽管如此，这并不否定架构特定优化（architecture-specific optimizations）的价值。在本节中，我们将讨论如何针对特定平台进行优化。我们将介绍 ISA 扩展（ISA extensions）、CPU 分发（CPU dispatch）技术，并探讨如何理解指令延迟（instruction latencies）和吞吐量（throughput）。
 
@@ -69,7 +69,7 @@ CPU 分发构造通常用于仅优化代码的特定部分，例如热函数（h
 
 ### 指令延迟与吞吐量
 
-除 ISA 扩展外，了解处理器中执行单元（execution units）的数量和类型也很有价值（例如，处理器每个周期能发出多少次加载、存储、除法和乘法）。对于大多数处理器，CPU 厂商会在相应的技术手册中公布这些信息。然而，特定指令的延迟和吞吐量数据通常不会披露。尽管如此，人们已经对单条指令进行了基准测试，相关数据可在线访问。对于最新的 Intel 和 AMD CPU，指令的延迟、吞吐量、端口使用情况以及 $\mu$op 数量可以在 [uops.info](https://uops.info/table.html)[^2] 网站上查阅。对于 Apple 处理器，类似数据可在 [AppleOptimizationGuide] 中获取。[^6] 除了指令延迟和吞吐量之外，开发者还对微架构的其他方面进行了逆向工程，例如分支预测历史缓冲区大小、乱序执行缓冲区（reorder buffer）容量、加载/存储缓冲区大小等。
+除 ISA 扩展外，了解处理器中执行单元（execution units）的数量和类型也很有价值（例如，处理器每个周期能发出多少次加载、存储、除法和乘法）。对于大多数处理器，CPU 厂商会在相应的技术手册中公布这些信息。然而，特定指令的延迟和吞吐量数据通常不会披露。尽管如此，人们已经对单条指令进行了基准测试，相关数据可在线访问。对于最新的 Intel 和 AMD CPU，指令的延迟、吞吐量、端口使用情况以及 μop 数量可以在 [uops.info](https://uops.info/table.html)[^2] 网站上查阅。对于 Apple 处理器，类似数据可在 [AppleOptimizationGuide] 中获取。[^6] 除了指令延迟和吞吐量之外，开发者还对微架构的其他方面进行了逆向工程，例如分支预测历史缓冲区大小、乱序执行缓冲区（reorder buffer）容量、加载/存储缓冲区大小等。
 
 在根据指令延迟和吞吐量数值得出结论时要非常谨慎。在许多情况下，指令延迟被乱序执行引擎（out-of-order execution engine）所隐藏，一条指令的延迟是 4 个周期还是 8 个周期可能并不重要。如果它不阻碍前向执行（forward progress），该指令将在"后台"处理，不会影响性能。然而，当一条指令处于关键依赖链（critical dependency chain）上时，其延迟就变得重要了，因为它会延迟依赖操作的执行。
 
@@ -118,6 +118,6 @@ Core cycles: 4.00                      │ Instructions retired: 3.00
 [^1]: Intel APX - [https://www.intel.com/content/www/us/en/developer/articles/technical/advanced-performance-extensions-apx.html](https://www.intel.com/content/www/us/en/developer/articles/technical/advanced-performance-extensions-apx.html)
 [^2]: x86 指令延迟和吞吐量 - [https://uops.info/table.html](https://uops.info/table.html)
 [^4]: LLVM 用于指定浮点标志的扩展 - [https://clang.llvm.org/docs/LanguageExtensions.html#extensions-to-specify-floating-point-flags](https://clang.llvm.org/docs/LanguageExtensions.html#extensions-to-specify-floating-point-flags)
-[^5]: 这场争论其实也并不有趣，因为经过 $\mu$op 转换后，x86 本质上也成为了 RISC 风格的微架构——复杂指令被分解为更简单的指令。
+[^5]: 这场争论其实也并不有趣，因为经过 μop 转换后，x86 本质上也成为了 RISC 风格的微架构——复杂指令被分解为更简单的指令。
 [^6]: 此外，还有通过逆向工程实验收集的指令吞吐量和延迟数据，例如 [https://dougallj.github.io/applecpu/firestorm-simd.html](https://dougallj.github.io/applecpu/firestorm-simd.html)。由于这是非官方数据来源，应持审慎态度。
 [^7]: 由于浮点值的舍入方式不同，两个版本将产生略有差异的结果。
