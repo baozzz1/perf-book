@@ -10,13 +10,19 @@ Intel 处理器追踪（Intel Processor Traces，PT）是一项 CPU 功能，它
 
 图 PT_encoding 展示了一段小指令序列的编码示例。`PUSH`、`MOV`、`ADD` 和 `CMP` 等指令因不改变控制流而被忽略。但 `JE` 指令可能跳转到 `.label`，因此需要记录其结果。之后还有一个间接调用，其目标地址会被保存。
 
-![Intel Processor Traces encoding](../../img/appendix-D/PT_encoding.jpg)
+![Intel Processor Traces encoding](../../../img/appendix-D/PT_encoding.jpg)
+
+<p align="center"><em>Intel Processor Traces encoding</em></p>
+
 
 在分析阶段，我们将应用程序二进制文件与收集到的 PT 追踪数据结合起来。软件解码器需要应用程序的二进制文件来重建程序的执行流程。它从程序入口点开始，将收集到的追踪数据作为查找参考来确定控制流。
 
 图 PT_decoding 展示了解码 Intel 处理器追踪的示例。假设 `PUSH` 指令是应用程序二进制文件的入口点，则 `PUSH`、`MOV`、`ADD` 和 `CMP` 会被原样重建，无需查阅已编码的追踪数据。之后软件解码器遇到 `JE` 指令——这是一个条件分支，需要查找其结果。根据图 PT_decoding 中的追踪数据，`JE` 发生了跳转（`T`），因此跳过下一条 `MOV` 指令，转到 `CALL` 指令。同样，`CALL(edx)` 是改变控制流的指令，需要在已编码追踪中查找目标地址，即 `0x407e1d8`。
 
-![Intel Processor Traces decoding](../../img/appendix-D/PT_decoding.jpg)
+![Intel Processor Traces decoding](../../../img/appendix-D/PT_decoding.jpg)
+
+<p align="center"><em>Intel Processor Traces decoding</em></p>
+
 
 黄色高亮的指令是程序运行时实际执行的指令。注意，这是对程序执行的*精确*重建，没有跳过任何指令。之后可以利用调试信息将汇编指令映射回源代码，从而获得逐行执行的源代码日志。
 
@@ -24,7 +30,10 @@ Intel 处理器追踪（Intel Processor Traces，PT）是一项 CPU 功能，它
 
 借助 Intel PT，不仅可以追踪执行流程，还可以追踪时序信息（timing information）。除了保存跳转目标，PT 还可以发出时序数据包（timing packets）。图 PT_timings 展示了如何利用时序数据包为指令恢复时间戳。与前面的示例类似，首先看到 `JNZ` 未发生跳转（`NT`），因此将其及其上方的所有指令的时间戳更新为 0ns。接着看到 2ns 的时序更新，以及 `JE` 发生跳转，因此将 `JE` 及其上方（`JNZ` 下方）的所有指令时间戳更新为 2ns。之后有一个间接调用（`CALL(edx)`），但没有附带时序数据包，因此不更新时间戳。然后看到经过了 100ns，`JB` 未发生跳转，因此将其上方的所有指令时间戳更新为 102ns。
 
-![Intel Processor Traces timings](../../img/appendix-D/PT_timings.jpg)
+![Intel Processor Traces timings](../../../img/appendix-D/PT_timings.jpg)
+
+<p align="center"><em>Intel Processor Traces timings</em></p>
+
 
 图 PT_timings 所示示例中，指令数据（控制流）是完全精确的，但时序信息精度稍低。显然，`CALL(edx)`、`TEST` 和 `JB` 指令并非同时发生，但我们没有更精确的时序信息。时间戳使我们能够将程序的时间区间与系统中的其他事件对齐，并且便于与挂钟时间（wall clock time）进行比较。某些实现中可以通过周期精确模式（cycle-accurate mode）进一步提升追踪时序精度，该模式下硬件会记录相邻正常数据包之间的时钟周期数（详见 [IntelOptimizationManual]）。
 

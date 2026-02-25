@@ -2,7 +2,10 @@
 
 为了了解本章所讨论的概念在实践中如何使用，让我们看一下 Intel 第 12 代核心 Golden Cove 的实现，该核心于 2021 年推出。这个核心作为 Alder Lake 和 Sapphire Rapids 平台中的 P 核使用。图 Goldencove_diag 展示了 Golden Cove 核心的框图。注意，本节只描述单个核心，而不是整个处理器。因此，我们将跳过关于频率、核心数量、L3 缓存、核心互连、内存延迟和带宽的讨论。
 
-![Intel Golden Cove 微架构中 CPU 核心的框图。](../../img/uarch/goldencove_block_diagram.png)
+![Intel Golden Cove 微架构中 CPU 核心的框图。](../../../img/uarch/goldencove_block_diagram.png)
+
+<p align="center"><em>Intel Golden Cove 微架构中 CPU 核心的框图。</em></p>
+
 
 该核心被分为顺序（in-order）的前端（frontend），用于获取和将 x86 指令译码为 $\mu$ops[^9]，以及一个 6 路超标量乱序后端（out-of-order backend）。Golden Cove 核心支持 2 路 SMT。它具有 32KB 一级指令缓存（L1 I-cache）和 48KB 一级数据缓存（L1 D-cache）。L1 缓存由统一的 1.25MB（服务器芯片中为 2MB）L2 缓存支持。L1 和 L2 缓存对每个核心私有。在本节末尾，我们还将介绍 TLB 层次结构。
 
@@ -30,7 +33,10 @@ CPU 后端采用 OOO 引擎来执行指令并存储结果。我在图 Goldencove
 
 OOO 引擎的核心是 512 个条目的重排序缓冲区（ROB）。它有几个目的。首先，它提供寄存器重命名。[^5] 只有 16 个通用整数架构寄存器和 32 个浮点/SIMD 架构寄存器，但物理寄存器的数量要高得多。[^1] 物理寄存器位于一个称为物理寄存器文件（PRF，Physical Register File）的结构中。整数和浮点/SIMD 寄存器有独立的 PRF。从架构可见寄存器到物理寄存器的映射保存在寄存器别名表（RAT，Register Alias Table）中。
 
-![Intel Golden Cove 微架构 CPU 后端的框图。](../../img/uarch/goldencove_OOO.png)
+![Intel Golden Cove 微架构 CPU 后端的框图。](../../../img/uarch/goldencove_OOO.png)
+
+<p align="center"><em>Intel Golden Cove 微架构 CPU 后端的框图。</em></p>
+
 
 其次，ROB 分配执行资源。当一条指令进入 ROB 时，会分配一个新条目并为其分配资源，主要是执行单元和目标物理寄存器。ROB 每个周期可以分配最多 6 个 $\mu$ops。
 
@@ -52,7 +58,10 @@ OOO 引擎的核心是 512 个条目的重排序缓冲区（ROB）。它有几�
 * 端口 4 和 9 用于存储操作（STD）。
 * 端口 7 和 8 用于地址生成。
 
-![Intel Golden Cove 微架构执行引擎和加载-存储单元的框图。](../../img/uarch/goldencove_BE_LSU.png)
+![Intel Golden Cove 微架构执行引擎和加载-存储单元的框图。](../../../img/uarch/goldencove_BE_LSU.png)
+
+<p align="center"><em>Intel Golden Cove 微架构执行引擎和加载-存储单元的框图。</em></p>
+
 
 需要内存操作的指令由加载-存储单元（Load-Store unit）处理（端口 2、3、11、4、9、7 和 8），我们将在下一节讨论。如果操作不涉及加载或存储数据，则它将被分发到执行引擎（端口 0、1、5、6 和 10）。某些指令可能需要必须在不同执行端口上执行的两个 $\mu$ops，例如加载和加法。
 
@@ -113,7 +122,10 @@ Load R1, MEM_LOC
 
 回想一下 [TLBs] 中讲到的，虚拟到物理地址的转换缓存在 TLB 中。Golden Cove 的 TLB 层次结构如图 GLC_TLB 所示。与常规数据缓存类似，它有两个级别，其中第 1 级有针对指令（ITLB）和数据（DTLB）的独立实例。L1 ITLB 有 256 个普通 4K 页的条目，覆盖 1MB 内存，而 L1 DTLB 有 96 个条目，覆盖 384 KB。
 
-![Intel Golden Cove 微架构的 TLB 层次结构。](../../img/uarch/GLC_TLB_hierarchy.png)
+![Intel Golden Cove 微架构的 TLB 层次结构。](../../../img/uarch/GLC_TLB_hierarchy.png)
+
+<p align="center"><em>Intel Golden Cove 微架构的 TLB 层次结构。</em></p>
+
 
 层次结构的第二级（STLB）缓存指令和数据的转换。它是为 L1 TLB 未命中请求提供服务的更大存储。L2 STLB 可以容纳 2048 个近期数据和指令页面地址转换，总共覆盖 8MB 内存空间。2MB 大页可用的条目较少：L1 ITLB 有 32 个条目，L1 DTLB 有 32 个条目，L2 STLB 只能使用 1024 个条目，这些条目也与常规 4KB 页共享。
 

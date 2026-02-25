@@ -7,7 +7,10 @@
 1. 点击开始 &rarr; 搜索"secpol.msc"并启动。
 2. 在左侧选择"本地策略"（Local Policies）&rarr;"用户权限分配"（User Rights Assignment），然后双击"锁定内存中的页面"（Lock pages in memory）。
 
-![Windows security: Lock pages in memory](../../img/appendix-C/WinLockPages.png)
+![Windows security: Lock pages in memory](../../../img/appendix-C/WinLockPages.png)
+
+<p align="center"><em>Windows security: Lock pages in memory</em></p>
+
 
 3. 添加您的用户并重启计算机。
 

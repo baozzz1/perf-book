@@ -8,7 +8,10 @@
 4. 访存（MEM，Memory Access）
 5. 写回（WB，Write Back）
 
-![简单 5 级流水线示意图。](../../img/uarch/Pipelining.png)
+![简单 5 级流水线示意图。](../../../img/uarch/Pipelining.png)
+
+<p align="center"><em>简单 5 级流水线示意图。</em></p>
+
 
 图 Pipelining 展示了 5 级流水线 CPU 的理想流水线视图。在第 1 个时钟周期，指令 x 进入流水线的 IF 阶段。在下一个周期，随着指令 x 进入 ID 阶段，程序中的下一条指令进入 IF 阶段，依此类推。一旦流水线被填满（如上面第 5 个周期所示），CPU 的所有流水线阶段都忙于处理不同的指令。没有流水线的话，指令 `x+1` 直到指令 `x` 完成其工作之后才能开始执行。
 

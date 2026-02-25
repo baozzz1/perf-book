@@ -5,94 +5,31 @@
 这就是为什么除了硬件性能事件之外，性能工程师（performance engineer）还经常使用指标（metrics）——这些指标是在原始事件基础上构建的。表 perf_metrics 展示了 Intel 第 12 代 Golden Cove 架构的指标列表，以及描述和公式。该列表并不详尽，但展示了最重要的指标。Intel CPU 完整指标列表及其公式可以在 [TMA_metrics.xlsx](https://github.com/intel/perfmon/blob/main/TMA_Metrics.xlsx) 中找到。[^1] [PerfMetricsCaseStudy] 展示了如何在实践中使用性能指标。
 
 
---------------------------------------------------------------------------
-指标名称  描述                          公式
-------- -------------------------- ---------------------------------------
-L1MPKI  每千条指令的 L1 缓存真实       1000 * MEM_LOAD_RETIRED.L1_MISS_PS /
-        未命中次数（针对已退休的        INST_RETIRED.ANY
-        按需加载）。
-
-L2MPKI  每千条指令的 L2 缓存真实       1000 * MEM_LOAD_RETIRED.L2_MISS_PS /
-        未命中次数（针对已退休的        INST_RETIRED.ANY
-        按需加载）。
-
-L3MPKI  每千条指令的 L3 缓存真实       1000 * MEM_LOAD_RETIRED.L3_MISS_PS /
-        未命中次数（针对已退休的        INST_RETIRED.ANY
-        按需加载）。
-
-Branch  所有分支中预测错误的比率        BR_MISP_RETIRED.ALL_BRANCHES /
-Mispr.                               BR_INST_RETIRED.ALL_BRANCHES
-Ratio
-
-Code    每千条指令的 STLB（第二级      1000 * ITLB_MISSES.WALK_COMPLETED
-STLB    TLB）推测性代码未命中次数      / INST_RETIRED.ANY
-MPKI    （完成页表遍历的任意页大小
-        未命中）
-
-Load    每千条指令的 STLB 数据加载     1000 * DTLB_LD_MISSES.WALK_COMPLETED
-STLB    推测性未命中次数               / INST_RETIRED.ANY
-MPKI
-
-Store   每千条指令的 STLB 数据存储     1000 * DTLB_ST_MISSES.WALK_COMPLETED
-STLB    推测性未命中次数               / INST_RETIRED.ANY
-MPKI
-
-Load    L1 D-cache 未命中按需加载操    L1D_PEND_MISS.PENDING /
-Miss    作的平均延迟（以核心周期计）    MEM_LD_COMPLETED.L1_MISS_ANY
-Real
-Latency
-
-ILP     每核心的指令级并行度           UOPS_EXECUTED.THREAD /
-        （有执行时平均执行的            UOPS_EXECUTED.CORE_CYCLES_GE1,
-        $\mu$ops 数量）               若启用 SMT 则除以 2
-
-MLP     每线程的内存级并行度           L1D_PEND_MISS.PENDING /
-        （至少有一个 L1 未命中按需     L1D_PEND_MISS.PENDING_CYCLES
-        加载时的平均未命中数量）
-
-DRAM    读写操作的平均外部内存带宽      ( 64 * ( UNC_M_CAS_COUNT.RD +
-BW Use  使用量（GB/s）                          UNC_M_CAS_COUNT.WR )
-GB/sec                               / 1GB ) / Time
-
-IpCall  每次近调用（near call）的       INST_RETIRED.ANY /
-        指令数（数字越小表示发生率      BR_INST_RETIRED.NEAR_CALL
-        越高）
-
-Ip      每个分支的指令数               INST_RETIRED.ANY /
-Branch                               BR_INST_RETIRED.ALL_BRANCHES
-
-IpLoad  每次加载的指令数               INST_RETIRED.ANY /
-                                     MEM_INST_RETIRED.ALL_LOADS_PS
-
-IpStore 每次存储的指令数               INST_RETIRED.ANY /
-                                     MEM_INST_RETIRED.ALL_STORES_PS
-
-IpMisp  每次非推测性分支预测错误的      INST_RETIRED.ANY /
-redict  指令数                        BR_MISP_RETIRED.ALL_BRANCHES
-
-IpFLOP  每次 FP（浮点）操作的指令数    参见 TMA_metrics.xlsx
-
-IpArith 每次 FP 算术指令的指令数       参见 TMA_metrics.xlsx
-
-IpArith 每次 FP 算术标量单精度         INST_RETIRED.ANY /
-Scalar  指令的指令数                   FP_ARITH_INST.SCALAR_SINGLE
-SP
-
-IpArith 每次 FP 算术标量双精度         INST_RETIRED.ANY /
-Scalar  指令的指令数                   FP_ARITH_INST.SCALAR_DOUBLE
-DP
-
-Ip      每次算术 AVX/SSE              INST_RETIRED.ANY / (
-Arith   128 位指令的指令数             FP_ARITH_INST.128B_PACKED_DOUBLE+
-AVX128                               FP_ARITH_INST.128B_PACKED_SINGLE)
-
-Ip      每次算术 AVX*                 INST_RETIRED.ANY / (
-Arith   256 位指令的指令数             FP_ARITH_INST.256B_PACKED_DOUBLE+
-AVX256                               FP_ARITH_INST.256B_PACKED_SINGLE)
-
-Ip      每次软件预取指令（任意类型）    INST_RETIRED.ANY /
-SWPF    的指令数                      SW_PREFETCH_ACCESS.T0:u0xF
---------------------------------------------------------------------------
+| 指标名称 | 描述 | 公式 |
+|----------|------|------|
+| L1MPKI | 每千条指令的 L1 缓存真实未命中次数（针对已退休的按需加载）。 | 1000 * MEM_LOAD_RETIRED.L1_MISS_PS / INST_RETIRED.ANY |
+| L2MPKI | 每千条指令的 L2 缓存真实未命中次数（针对已退休的按需加载）。 | 1000 * MEM_LOAD_RETIRED.L2_MISS_PS / INST_RETIRED.ANY |
+| L3MPKI | 每千条指令的 L3 缓存真实未命中次数（针对已退休的按需加载）。 | 1000 * MEM_LOAD_RETIRED.L3_MISS_PS / INST_RETIRED.ANY |
+| Branch Mispr. Ratio | 所有分支中预测错误的比率 | BR_MISP_RETIRED.ALL_BRANCHES / BR_INST_RETIRED.ALL_BRANCHES |
+| Code STLB MPKI | 每千条指令的 STLB（第二级 TLB）推测性代码未命中次数（完成页表遍历的任意页大小未命中） | 1000 * ITLB_MISSES.WALK_COMPLETED / INST_RETIRED.ANY |
+| Load STLB MPKI | 每千条指令的 STLB 数据加载推测性未命中次数 | 1000 * DTLB_LD_MISSES.WALK_COMPLETED / INST_RETIRED.ANY |
+| Store STLB MPKI | 每千条指令的 STLB 数据存储推测性未命中次数 | 1000 * DTLB_ST_MISSES.WALK_COMPLETED / INST_RETIRED.ANY |
+| Load Miss Real Latency | L1 D-cache 未命中按需加载操作的平均延迟（以核心周期计） | L1D_PEND_MISS.PENDING / MEM_LD_COMPLETED.L1_MISS_ANY |
+| ILP | 每核心的指令级并行度（有执行时平均执行的 $\mu$ops 数量） | UOPS_EXECUTED.THREAD / UOPS_EXECUTED.CORE_CYCLES_GE1, 若启用 SMT 则除以 2 |
+| MLP | 每线程的内存级并行度（至少有一个 L1 未命中按需加载时的平均未命中数量） | L1D_PEND_MISS.PENDING / L1D_PEND_MISS.PENDING_CYCLES |
+| DRAM BW Use GB/sec | 读写操作的平均外部内存带宽使用量（GB/s） | ( 64 * ( UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR ) / 1GB ) / Time |
+| IpCall | 每次近调用（near call）的指令数（数字越小表示发生率越高） | INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_CALL |
+| Ip Branch | 每个分支的指令数 | INST_RETIRED.ANY / BR_INST_RETIRED.ALL_BRANCHES |
+| IpLoad | 每次加载的指令数 | INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_LOADS_PS |
+| IpStore | 每次存储的指令数 | INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_STORES_PS |
+| IpMispredict | 每次非推测性分支预测错误的指令数 | INST_RETIRED.ANY / BR_MISP_RETIRED.ALL_BRANCHES |
+| IpFLOP | 每次 FP（浮点）操作的指令数 | 参见 TMA_metrics.xlsx |
+| IpArith | 每次 FP 算术指令的指令数 | 参见 TMA_metrics.xlsx |
+| IpArith Scalar SP | 每次 FP 算术标量单精度指令的指令数 | INST_RETIRED.ANY / FP_ARITH_INST.SCALAR_SINGLE |
+| IpArith Scalar DP | 每次 FP 算术标量双精度指令的指令数 | INST_RETIRED.ANY / FP_ARITH_INST.SCALAR_DOUBLE |
+| Ip Arith AVX128 | 每次算术 AVX/SSE 128 位指令的指令数 | INST_RETIRED.ANY / ( FP_ARITH_INST.128B_PACKED_DOUBLE+ FP_ARITH_INST.128B_PACKED_SINGLE) |
+| Ip Arith AVX256 | 每次算术 AVX* 256 位指令的指令数 | INST_RETIRED.ANY / ( FP_ARITH_INST.256B_PACKED_DOUBLE+ FP_ARITH_INST.256B_PACKED_SINGLE) |
+| Ip SWPF | 每次软件预取指令（任意类型）的指令数 | INST_RETIRED.ANY / SW_PREFETCH_ACCESS.T0:u0xF |
 
 表：Intel Golden Cove 架构的性能指标列表（不完整）及其描述和公式。
 

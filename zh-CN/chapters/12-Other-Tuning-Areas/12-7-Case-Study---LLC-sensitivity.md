@@ -11,38 +11,28 @@
 我们使用了一台配备 16 核 AMD EPYC 7313P 处理器（代号 Milan）的服务器系统，该处理器由 AMD 于 2021 年推出。该系统的主要特性如表 Table experimental_setup 所示。
 
 
----------------------------------------------------------------------------
-Feature               Value
-----------------      -----------------------------------------------------
-Processor             AMD EPYC 7313P
-
-Cores x threads       16 $\times$ 2
- 
-Configuration         4 CCX $\times$ 4 cores/CCX
- 
-Frequency             3.0/3.7 GHz, base/max
-
-L1 cache (I, D)       8-ways, 32 KiB (per core), 64-byte lines
-
-L2 cache              8-ways, 512 KiB (per core), 64-byte lines
-
-LLC                   16-ways, 32 MB, non-inclusive (per CCX), 64-byte lines
- 
-Main Memory           512 GiB DDR4, 8 channels, nominal peak BW: 204.8 GB/s
-
-TurboBoost            Disabled
-
-Hyperthreading        Disabled (1 thread/core)
-
-OS                    Ubuntu 22.04, kernel 5.15.0-76
-
----------------------------------------------------------------------------
+| Feature | Value |
+|---------|-------|
+| Processor | AMD EPYC 7313P |
+| Cores x threads | 16 $\times$ 2 |
+| Configuration | 4 CCX $\times$ 4 cores/CCX |
+| Frequency | 3.0/3.7 GHz, base/max |
+| L1 cache (I, D) | 8-ways, 32 KiB (per core), 64-byte lines |
+| L2 cache | 8-ways, 512 KiB (per core), 64-byte lines |
+| LLC | 16-ways, 32 MB, non-inclusive (per CCX), 64-byte lines |
+| Main Memory | 512 GiB DDR4, 8 channels, nominal peak BW: 204.8 GB/s |
+| TurboBoost | Disabled |
+| Hyperthreading | Disabled (1 thread/core) |
+| OS | Ubuntu 22.04, kernel 5.15.0-76 |
 
 表：实验所用服务器的主要特性。
 
 图 milan7313P 展示了 AMD Milan 7313P 处理器的集群内存层次结构。它由四个核心复合体裸片（CCD，Core Complex Die）组成，通过 I/O 芯片组相互连接并连接到片外内存。每个 CCD 集成了一个核心复合体（CCX，Core CompleX）和一个 I/O 连接。每个 CCX 包含四个 Zen3 核心，共享一个 32 MB 的受害者（victim）LLC。[^11]
 
-![AMD Milan 7313P 处理器的集群内存层次结构。](../../img/other-tuning/Milan7313P.png)
+![AMD Milan 7313P 处理器的集群内存层次结构。](../../../img/other-tuning/Milan7313P.png)
+
+<p align="center"><em>AMD Milan 7313P 处理器的集群内存层次结构。</em></p>
+
 
 尽管总共有 128 MB 的 LLC（32 MB/CCX × 4 CCX），一个 CCX 的四个核心无法在其自身 32 MB LLC 之外的 LLC 中存储缓存行。由于我们将运行单线程基准测试，因此可以专注于单个 CCX。我们实验中的 LLC 大小将从 0 到 32 MB 以 2 MB 为步长变化。这与 16 路 LLC 直接相关：每禁用 16 路中的一路，LLC 大小减少 2 MB。
 
@@ -79,16 +69,11 @@ $ wrmsr -p 1 0xC92 0x00FF
 量化应用程序性能的最终度量指标是执行时间（execution time）。为了分析内存层次结构对系统性能的影响，我们还将使用以下三个度量指标：1) CPI（每指令周期数，cycles per instruction），2) DMPKI（每千条指令的 LLC 需求未命中数，demand misses in the LLC per thousand instructions），3) MPKI（每千条指令的总未命中数（需求 + 预取），total misses in the LLC per thousand instructions）。虽然 CPI 与应用程序性能直接相关，但 DMPKI 和 MPKI 不一定影响性能。表 metrics 显示了从特定硬件计数器计算每个度量指标的公式。每个计数器的详细描述可在 AMD 的处理器编程参考手册 [amd_ppr] 中找到。
 
 
-------   ----------------------------------------------------------------------------
-Metric                                     Formula                   
-------   ----------------------------------------------------------------------------
-CPI      Cycles not in Halt (PMCx076) / Retired Instructions (PMCx0C0)
-
-DMPKI    Demand Data Cache Fills[^9] (PMCx043) / (Retired Instr (PMCx0C0) / 1000)
-
-MPKI     L3 Misses[^8] (L3PMCx04) / (Retired Instructions (PMCx0C0) / 1000)
-
-------   ----------------------------------------------------------------------------
+| Metric | Formula |
+|--------|---------|
+| CPI | Cycles not in Halt (PMCx076) / Retired Instructions (PMCx0C0) |
+| DMPKI | Demand Data Cache Fills[^9] (PMCx043) / (Retired Instr (PMCx0C0) / 1000) |
+| MPKI | L3 Misses[^8] (L3PMCx04) / (Retired Instructions (PMCx0C0) / 1000) |
 
 表：案例研究中使用的度量指标计算公式。
 
@@ -102,7 +87,10 @@ MPKI     L3 Misses[^8] (L3PMCx04) / (Retired Instructions (PMCx0C0) / 1000)
 
 对于 CPI 图表，Y 轴值越低意味着性能越好。由于系统的频率是固定的，CPI 图表反映了绝对分数。例如，拥有 32 MB LLC 的 `520.omnetpp`（绿线）比拥有 0 MB LLC 的版本快 2.5 倍。对于 DMPKI 和 MPKI 图表，Y 轴值越低越好。
 
-![随 LLC 分配限制增加（2 MB 步长）的 CPI、DMPKI 和 MPKI。](../../img/other-tuning/llc-bw.png)
+![随 LLC 分配限制增加（2 MB 步长）的 CPI、DMPKI 和 MPKI。](../../../img/other-tuning/llc-bw.png)
+
+<p align="center"><em>随 LLC 分配限制增加（2 MB 步长）的 CPI、DMPKI 和 MPKI。</em></p>
+
 
 在 CPI 和 DMPKI 图表中可以观察到两种不同的行为。一方面，`520.omnetpp` 充分利用了 LLC 中的可用空间：随着 LLC 中分配的空间增加，CPI 和 DMPKI 都显著下降。我们可以说 `520.omnetpp` 的行为对 LLC 中的可用大小*敏感*。增加分配的 LLC 空间可以提高性能，因为它避免了驱逐将来会被使用的缓存行。
 

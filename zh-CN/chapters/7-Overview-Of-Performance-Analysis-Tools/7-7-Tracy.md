@@ -53,25 +53,40 @@ Tracy 有两种操作模式：它可以存储所有时序数据直到分析器�
 
 我们使用 Tracy 来调试程序，找出某些帧比其他帧慢的原因。数据在配备 Ryzen 7 5800X 处理器的 Windows 11 机器上捕获。程序使用 MSVC 19.36.32532 编译。Tracy 的图形界面相当丰富，但遗憾的是细节太多，无法放在一张截图中，所以我们将其分解为几个部分。顶部是如图 Tracy_Main_View 所示的时间线视图，为适应页面进行了裁剪。它只显示了第 76 帧的一部分，该帧渲染耗时 44.1 毫秒。在该图中，可以看到在那帧期间活跃的 `Main thread`（主线程）和五个 `WorkerThread`（工作线程）。所有线程，包括主线程，都在执行工作以推进最终图像的渲染。如前所述，每个线程在 `TraceRowJob` 区域内处理一行像素。每个 `TraceRowJob` 区域实例包含许多更小的区域，这些区域不可见。Tracy 会折叠内部区域，只显示折叠实例的数量。例如，主线程中第一个 `TraceRowJob` 下方的数字 `4,109` 就是这个意思。注意嵌套在 `TraceRowJob` 区域下的 `DoExtraWork` 区域实例。这个观察结果已经可以引导发现问题，但在实际应用程序中，可能不会如此明显。我们暂且搁置这个问题。
 
-![Tracy 主时间线视图。显示了渲染一帧时的主线程和五个工作线程。](../../img/perf-tools/tracy/tracy_main_timeline.png)
+![Tracy 主时间线视图。显示了渲染一帧时的主线程和五个工作线程。](../../../img/perf-tools/tracy/tracy_main_timeline.png)
+
+<p align="center"><em>Tracy 主时间线视图。显示了渲染一帧时的主线程和五个工作线程。</em></p>
+
 
 在主面板的正上方，有一个显示所有已记录帧时间的直方图（见图 Tracy_Frame_Time_View）。这使得发现那些花费比平均时间更长的帧变得更加容易。在本示例中，大多数帧约需 33 毫秒（黄色柱）。然而，有些帧需要更长时间，以红色标记。如截图所示，当你将鼠标指向直方图中的某个柱时，会显示该帧的详细信息提示框。在本示例中，我们显示的是最后一帧的详细信息。
 
-![Tracy 帧时序。可以找到比其他帧需要更多渲染时间的帧。](../../img/perf-tools/tracy/tracy_frame_view.png)
+![Tracy 帧时序。可以找到比其他帧需要更多渲染时间的帧。](../../../img/perf-tools/tracy/tracy_frame_view.png)
+
+<p align="center"><em>Tracy 帧时序。可以找到比其他帧需要更多渲染时间的帧。</em></p>
+
 
 图 Tracy_CPU_Data 展示了分析器的 CPU 数据部分。该区域显示某个线程在哪个核心上执行，还显示上下文切换（context switches）。本部分还会显示在 CPU 上运行的其他程序。如图所示，当鼠标悬停在 CPU 数据视图的某个部分时，会显示该线程的详细信息。详细信息包括线程运行所在的 CPU、父程序、各线程和时序信息。可以看到 `TestCpu.exe` 线程在整个程序运行期间只在 CPU 1 上活跃了 4.4 毫秒。
 
-![Tracy CPU 数据视图。可以查看每个 CPU 核心在任意给定时刻的执行情况。](../../img/perf-tools/tracy/tracy_cpu_view.png)
+![Tracy CPU 数据视图。可以查看每个 CPU 核心在任意给定时刻的执行情况。](../../../img/perf-tools/tracy/tracy_cpu_view.png)
+
+<p align="center"><em>Tracy CPU 数据视图。可以查看每个 CPU 核心在任意给定时刻的执行情况。</em></p>
+
 
 接下来是提供程序时间分配信息（热点）的面板。图 Tracy_Hotspots 是 Tracy 统计窗口的截图。可以查看记录的数据，包括某个函数的总活跃时间、调用次数等。还可以在主视图中选择时间范围，以过滤对应时间区间的信息。
 
-![Tracy 函数统计。一个常规的"热点"视图，提供程序时间分配的信息。](../../img/perf-tools/tracy/tracy_hotspots.png)
+![Tracy 函数统计。一个常规的"热点"视图，提供程序时间分配的信息。](../../../img/perf-tools/tracy/tracy_hotspots.png)
+
+<p align="center"><em>Tracy 函数统计。一个常规的"热点"视图，提供程序时间分配的信息。</em></p>
+
 
 最后一组面板使我们能够更深入地分析单个区域实例。点击任意区域实例（例如在主时间线视图或 *CPU data* 视图中），Tracy 将打开一个 *Zone Info*（区域信息）窗口（见图 Tracy_Zone_Details 的左侧面板），显示该区域实例的详细信息。它显示了区域本身或其子级消耗了多少执行时间。在本示例中，`TraceRowJob` 函数的执行耗时 19.24 毫秒，但函数本身不包含被调用函数的时间（自身时间，self time）仅为 1.36 毫秒，只占 7%。其余时间由子区域消耗。
 
 很容易发现对 `DoExtraWork` 的调用占用了大部分时间，19.24 毫秒中的 16.99 毫秒（见图 Tracy_Zone_Details 的左侧面板）。注意，这个特定的 `TraceRowJob` 实例运行时间几乎是平均情况的 4.4 倍（图中"437.93% of the mean time"所示）。找到了！我们发现了其中一个慢实例，其中 `TraceRowJob` 函数因一些额外工作而变慢。一种处理方式是点击 `DoExtraWork` 行以检查该区域实例。这将更新区域信息视图，显示 `DoExtraWork` 实例的详细信息，以便我们深入了解性能问题的原因。该视图还显示区域起始的源文件和代码行。因此，另一种策略是检查源代码，以了解当前 `TraceRowJob` 实例为何比平时花费更多时间。
 
-![Tracy 区域详情窗口。显示 `TraceRowJob` 区域慢实例的统计信息。](../../img/perf-tools/tracy/tracy_zone_details.png)
+![Tracy 区域详情窗口。显示 `TraceRowJob` 区域慢实例的统计信息。](../../../img/perf-tools/tracy/tracy_zone_details.png)
+
+<p align="center"><em>Tracy 区域详情窗口。显示 `TraceRowJob` 区域慢实例的统计信息。</em></p>
+
 
 请记住，在图 Tracy_Frame_Time_View 中，我们看到还有其他慢帧。让我们看看这是否是所有慢帧的共同问题。如果点击 *Statistics*（统计）按钮，将显示 *Find Zone*（查找区域）面板（图 Tracy_Zone_Details 的右侧）。在这里可以看到聚合所有区域实例的时间直方图。这对于确定执行函数时存在多大变化特别有用。观察右侧的直方图，可以看到 `TraceRowJob` 函数的中位持续时间为 3.59 毫秒，大多数调用在 1 到 7 毫秒之间。然而，有几个实例超过 10 毫秒，峰值达到 23 毫秒。注意时间轴是对数刻度。Find Zone 窗口还提供其他数据点，包括所检查区域的均值、中位数和标准差。
 

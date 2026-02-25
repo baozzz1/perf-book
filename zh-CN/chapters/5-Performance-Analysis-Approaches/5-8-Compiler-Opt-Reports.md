@@ -44,7 +44,10 @@ a.c:5:3: remark: unrolled loop by a factor of 8 with run-time trip count [-Rpass
 ...
 ```
 
-![可视化代码清单 optReport 中的操作顺序。](../../img/perf-analysis/VectorDep.png)
+![可视化代码清单 optReport 中的操作顺序。](../../../img/perf-analysis/VectorDep.png)
+
+<p align="center"><em>可视化代码清单 optReport 中的操作顺序。</em></p>
+
 
 如果我们对代码清单 optReport 中的代码进行向量化，将导致数组 `a` 中写入错误的值。假设 CPU SIMD 单元每次可以处理四个浮点数，我们将得到可以用以下伪代码表示的代码：
 

@@ -10,7 +10,10 @@
 
 将 Coz 分析器应用于 [C-Ray](https://github.com/jtsiomb/c-ray)[^15] 基准测试的示例如图 CozProfile 所示。根据图表，如果我们将 `c-ray-mt.c` 第 540 行的性能提升 20%，Coz 预计 C-Ray 基准测试的整体应用程序性能相应增加约 17%。一旦我们在该行上达到约 45% 的提升，Coz 估计对应用程序的影响开始趋于平稳。有关此示例的更多详细信息，请参阅 Easyperf 博客上的[文章](https://easyperf.net/blog/2020/02/26/coz-vs-sampling-profilers)。[^17]
 
-![C-Ray 基准测试的 Coz 性能剖析。](../../img/mt-perf/CozProfile.png)
+![C-Ray 基准测试的 Coz 性能剖析。](../../../img/mt-perf/CozProfile.png)
+
+<p align="center"><em>C-Ray 基准测试的 Coz 性能剖析。</em></p>
+
 
 [^15]: C-Ray benchmark - [https://github.com/jtsiomb/c-ray](https://github.com/jtsiomb/c-ray).
 [^16]: COZ source code - [https://github.com/plasma-umass/coz](https://github.com/plasma-umass/coz).

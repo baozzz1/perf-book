@@ -4,7 +4,10 @@
 
 计数背后的想法非常简单：我们希望在程序运行时统计某些性能监控事件的总数量。PMCs 在自顶向下微架构分析（Top-down Microarchitecture Analysis，TMA）方法中被大量使用，我们将在 [TMA] 中仔细研究该方法。图 Counting 说明了从程序开始到结束统计性能事件的过程。
 
-![统计性能事件。](../../img/perf-analysis/CountingFlow.png)
+![统计性能事件。](../../../img/perf-analysis/CountingFlow.png)
+
+<p align="center"><em>统计性能事件。</em></p>
+
 
 图 Counting 中概述的步骤大致代表了典型分析工具统计性能事件所执行的操作。`perf stat` 工具实现了类似的过程，可用于统计各种硬件事件，如指令数、周期数、缓存缺失次数等。以下是 `perf stat` 输出的示例：
 
@@ -45,9 +48,9 @@ cache:
 如果你需要收集的事件数量超过可用 PMC 的数量，分析工具会使用时间多路复用（time multiplexing）让每个事件都有机会访问监控硬件。图 Multiplexing1 展示了只有 4 个计数器可用时，在 8 个性能事件之间进行多路复用的示例。
 
 <div id="fig:Multiplexing">
-![](../../img/perf-analysis/Multiplexing1.png)
+![](../../../img/perf-analysis/Multiplexing1.png)
 
-![](../../img/perf-analysis/Multiplexing2.png)
+![](../../../img/perf-analysis/Multiplexing2.png)
 
 只有 4 个 PMC 可用时，在 8 个性能事件之间进行多路复用。
 </div>

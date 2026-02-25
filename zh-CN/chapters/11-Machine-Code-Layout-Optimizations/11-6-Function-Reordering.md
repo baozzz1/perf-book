@@ -7,8 +7,14 @@
 我们可以重新排列函数顺序，使热函数彼此靠近（见图 FuncGroup_better）。在改进版本中，`foo`、`bar` 和 `zoo` 函数的代码只占用三条缓存行。另外，注意函数 `zoo` 现在被放置在 `foo` 和 `bar` 之间，符合函数调用的顺序。当我们从 `foo` 调用 `zoo` 时，`zoo` 的起始部分已经在 I-cache 中了。
 
 <div id="fig:FunctionGrouping">
-![default layout](../../img/cpu_fe_opts/FunctionGrouping_Default.png)
-![improved layout](../../img/cpu_fe_opts/FunctionGrouping_Better.png)
+![default layout](../../../img/cpu_fe_opts/FunctionGrouping_Default.png)
+
+<p align="center"><em>default layout</em></p>
+
+![improved layout](../../../img/cpu_fe_opts/FunctionGrouping_Better.png)
+
+<p align="center"><em>improved layout</em></p>
+
 
 重排热函数。
 </div>

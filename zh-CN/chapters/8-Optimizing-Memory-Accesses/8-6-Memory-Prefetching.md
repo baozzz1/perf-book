@@ -19,7 +19,10 @@ for (int i = 0; i < N; ++i) {
   doSomeExtensiveComputation(x);
 }
 ```
-![显示加载延迟处于关键路径上的执行时间线。](../../img/memory-access-opts/SWmemprefetch1.png)
+![显示加载延迟处于关键路径上的执行时间线。](../../../img/memory-access-opts/SWmemprefetch1.png)
+
+<p align="center"><em>显示加载延迟处于关键路径上的执行时间线。</em></p>
+
 
 幸运的是，这并非死路一条，有一种方法可以通过将加载与 `doSomeExtensiveComputation` 的执行完全重叠来加速此代码，从而隐藏缓存缺失的延迟。我们可以通过称为*软件流水线（software pipelining）*和*显式内存预取（explicit memory prefetching）*的技术来实现这一点。代码清单 MemPrefetch2 展示了这个想法的实现。我们对随机数的生成进行流水线处理，并开始预取下一次迭代的内存位置，与 `doSomeExtensiveComputation` 并行进行。
 
@@ -37,7 +40,10 @@ for (int i = 0; i < N; ++i) {
 ```
 此转换的图形说明如图 SWmemprefetch2 所示。我们利用软件流水线为下一次迭代生成随机数。换句话说，在迭代 `M` 上，我们生成将在迭代 `M+1` 上消费的随机数。这使我们能够提前发出内存请求，因为我们已经知道数组中的下一个索引。这种转换使我们的预取窗口大得多，并完全隐藏了缓存缺失的延迟。在迭代 `M+1` 上，实际加载很有可能命中缓存，因为它在迭代 `M` 上已经被预取了。
 
-![通过将缓存缺失延迟与其他执行重叠来隐藏它。](../../img/memory-access-opts/SWmemprefetch2.png)
+![通过将缓存缺失延迟与其他执行重叠来隐藏它。](../../../img/memory-access-opts/SWmemprefetch2.png)
+
+<p align="center"><em>通过将缓存缺失延迟与其他执行重叠来隐藏它。</em></p>
+
 
 注意 [`__builtin_prefetch`](https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)[^4] 的使用，这是开发者可以用来显式请求 CPU 预取特定内存位置的特殊提示。另一个选项是使用编译器内部函数（compiler intrinsics）。在 x86 平台上有 `_mm_prefetch` 内部函数，在 ARM 平台上有 `__pld` 内部函数。编译器将为 x86 生成 `PREFETCH` 指令，为 ARM 生成 `pld` 指令。
 

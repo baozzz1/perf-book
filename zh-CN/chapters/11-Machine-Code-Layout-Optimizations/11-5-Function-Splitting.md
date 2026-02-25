@@ -24,8 +24,14 @@ void foo(bool cond1,                void foo(bool cond1,
 注意，我们使用 `noinline` 属性禁止冷函数被内联。因为如果不这样做，编译器可能会决定将其内联，这实际上会撤销我们的变换。或者，我们可以在 `cond1` 和 `cond2` 两个分支上都应用 `[[unlikely]]` 宏（参见 [secLIKELY]），向编译器传达不希望内联 `cold1` 和 `cold2` 函数的意图。
 
 <div id="fig:FunctionSplitting">
-![default layout](../../img/cpu_fe_opts/FunctionSplitting_Default.png)
-![improved layout](../../img/cpu_fe_opts/FunctionSplitting_Improved.png)
+![default layout](../../../img/cpu_fe_opts/FunctionSplitting_Default.png)
+
+<p align="center"><em>default layout</em></p>
+
+![improved layout](../../../img/cpu_fe_opts/FunctionSplitting_Improved.png)
+
+<p align="center"><em>improved layout</em></p>
+
 
 将冷代码拆分到单独函数中。
 </div>

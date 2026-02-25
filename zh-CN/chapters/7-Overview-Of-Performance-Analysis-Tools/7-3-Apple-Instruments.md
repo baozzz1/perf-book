@@ -21,7 +21,10 @@
 
 在本示例中，我将展示如何在配备 M1 处理器、macOS 13.5.1 Ventura 和 16 GB RAM 的 Apple Mac mini 上收集硬件性能计数器。我选取了 LLVM 代码库中最大的文件之一，并使用 Clang C++ 编译器 15.0 版本对其编译过程进行了分析。
 
-![Xcode Instruments：时间线与统计面板。](../../img/perf-tools/XcodeInstrumentsView.jpg)
+![Xcode Instruments：时间线与统计面板。](../../../img/perf-tools/XcodeInstrumentsView.jpg)
+
+<p align="center"><em>Xcode Instruments：时间线与统计面板。</em></p>
+
 
 以下是我使用的命令行：
 
@@ -33,7 +36,10 @@ $ clang++ -O3 -DNDEBUG -arch arm64 <other options ...> -c llvm/lib/Transforms/Ve
 
 首先，打开 *Instruments* 并选择 *CPU Counters* 分析类型。第一步需要配置采集。点击并按住红色目标图标（见图 InstrumentsView 中的①），然后从菜单中选择 *Recording Options...*。这将显示图 InstrumentsDialog 中所示的对话框窗口。在这里可以添加要收集的硬件性能监控事件（hardware performance monitoring events）。Apple 在其手册 [AppleOptimizationGuide] 中记录了其硬件性能监控事件。
 
-![Xcode Instruments：CPU Counters 选项。](../../img/perf-tools/XcodeInstrumentsDialog.png)
+![Xcode Instruments：CPU Counters 选项。](../../../img/perf-tools/XcodeInstrumentsDialog.png)
+
+<p align="center"><em>Xcode Instruments：CPU Counters 选项。</em></p>
+
 
 第二步是设置分析目标。为此，点击并按住应用程序名称（图 InstrumentsView 中标记为②），然后选择你感兴趣的应用程序。如有需要，设置参数和环境变量。现在可以开始采集了；按下红色目标图标①。
 

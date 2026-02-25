@@ -6,7 +6,7 @@
 
 与最后分支记录（LBR）特性类似，PEBS 在程序剖析期间被用于随每个收集的样本捕获额外数据。当一个性能计数器被配置为 PEBS 时，处理器保存一组附加数据，这些数据具有固定格式，称为 PEBS 记录（PEBS record）。Intel Skylake CPU 的 PEBS 记录格式如图 PEBS_record 所示。它包含通用寄存器（`EAX`、`EBX`、`ESP` 等）的状态、`EventingIP`、`Data Linear Address`（数据线性地址）和`Latency value`（延迟值），以及其他少数字段。PEBS 记录的内容布局因不同的微架构而有所不同，详见 [IntelOptimizationManual]。
 
-![第 6、7、8 代 Intel Core 处理器系列的 PEBS 记录格式。*© 来源：[IntelOptimizationManual]。*](../../img/pmu-features/PEBS_record.png)
+![第 6、7、8 代 Intel Core 处理器系列的 PEBS 记录格式。*© 来源：[IntelOptimizationManual]。*](../../../img/pmu-features/PEBS_record.png)
 
 自 Skylake 起，PEBS 记录得到增强，可以收集 XMM 寄存器和最后分支记录（LBR）记录。格式也进行了重构，字段按基本组（Basic group）、内存组（Memory group）、通用寄存器组（GPR group）、XMM 组和 LBR 组分类。性能剖析工具可以选择感兴趣的数据组，从而降低记录开销。默认情况下，PEBS 记录仅包含基本组。
 

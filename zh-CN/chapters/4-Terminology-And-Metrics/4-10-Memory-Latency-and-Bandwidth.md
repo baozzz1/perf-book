@@ -20,7 +20,10 @@ Each iteration took 31.1 base frequency clocks (	12.5	ns)
 
 图 MemoryLatenciesCharts 展示了 L1、L2 和 L3 缓存的读延迟。图表上有四个不同的区域。从 1 KB 到 48 KB 缓冲区大小的最左侧第一区域对应 L1 D-cache，它是每个物理核心私有的。我们可以观察到 E 核的延迟为 0.9 ns，P 核略高为 1.1 ns。此外，我们可以用这张图确认缓存大小。注意当缓冲区大小超过 32 KB 后 E 核延迟开始上升，而 P 核延迟在 48 KB 之前保持不变。这证实了 E 核的 L1 D-cache 大小为 32 KB，P 核为 48 KB。
 
-![Intel Core i7-1260P 上 L1/L2/L3 缓存读延迟（越低越好），使用 MLC 工具测量，启用大页。](../../img/terms-and-metrics/MemLatencies.png)
+![Intel Core i7-1260P 上 L1/L2/L3 缓存读延迟（越低越好），使用 MLC 工具测量，启用大页。](../../../img/terms-and-metrics/MemLatencies.png)
+
+<p align="center"><em>Intel Core i7-1260P 上 L1/L2/L3 缓存读延迟（越低越好），使用 MLC 工具测量，启用大页。</em></p>
+
 
 第二区域显示了 L2 缓存延迟，E 核几乎是 P 核的两倍（5.9 ns vs. 3.2 ns）。对于 P 核，当缓冲区大小超过 1.25 MB 后延迟增加，这在意料之中。我们预计 E 核延迟在超过 2 MB 之前保持不变，但根据我们的测量结果，这一现象发生得更早。
 
@@ -41,7 +44,10 @@ ALL Reads        :      349670.42
 
 这里有几个新选项。`-k` 选项指定用于测量的 CPU 核心列表。`-Y` 选项告知 MLC 使用 AVX2 加载，即每次 32 字节。使用 `-u` 标志时，每个线程共享同一缓冲区，而不是分配自己的缓冲区。此选项必须用于测量 L3 带宽（注意我们使用了 18 MB 的缓冲区，等于 L3 缓存大小）。
 
-![Intel Core i7-1260P 内存层次结构及外部 DDR4 内存的框图。](../../img/terms-and-metrics/MemBandwidthAndLatenciesDiagram.png)
+![Intel Core i7-1260P 内存层次结构及外部 DDR4 内存的框图。](../../../img/terms-and-metrics/MemBandwidthAndLatenciesDiagram.png)
+
+<p align="center"><em>Intel Core i7-1260P 内存层次结构及外部 DDR4 内存的框图。</em></p>
+
 
 使用 Intel MLC 测量的我们测试系统的延迟和带宽综合数据如图 MemBandwidthAndLatenciesDiagram 所示。核心从较低层级缓存（如 L1 和 L2）获取数据的带宽远高于从共享 L3 缓存或主内存获取的带宽。L3 和 E 核 L2 等共享缓存能够相当好地扩展以同时满足多个核心的请求。例如，单个 E 核 L2 带宽为 100 GB/s。使用来自同一集群的两个 E 核，我测量到 140 GB/s，三个 E 核为 165 GB/s，全部四个 E 核可以从共享 L2 获取 175 GB/s。L3 缓存也类似，单个 P 核可达 60 GB/s，单个 E 核仅 25 GB/s。但当所有核心都被使用时，L3 缓存可以维持 300 GB/s 的带宽。从内存读取数据的速度可达 33.7 GB/s，而我的平台理论最大带宽为 38.4 GB/s。
 

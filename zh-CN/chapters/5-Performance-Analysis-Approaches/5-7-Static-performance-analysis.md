@@ -40,7 +40,10 @@ float foo(float * a, float B, int N){  │ .loop:
 
 代码看起来不错，但它是最优的吗？让我们来验证一下。我们将代码清单 FMAthroughput 中的汇编片段提交给 UICA 并进行了模拟。在撰写本文时，UICA 不支持 Alder Lake（Intel 第 12 代，基于 Golden Cove），因此我们在最新可用的 Rocket Lake（Intel 第 11 代，基于 Sunny Cove）上运行了它。尽管架构不同，但这个实验揭示的问题在两者中都同样明显。模拟结果如图 FMA_tput_UICA 所示。这是一个流水线图（pipeline diagram），类似于我们在第 3 章中展示的。我们跳过了前两次迭代，只展示迭代 2 和 3（最左列"It."）。此时执行达到稳定状态，之后的所有迭代看起来都非常相似。
 
-![UICA 流水线图。`I` = 发射（issued），`r` = 准备好调度（ready for dispatch），`D` = 已调度（dispatched），`E` = 已执行（executed），`R` = 已退役（retired）。](../../img/perf-analysis/fma_tput_uica.png)
+![UICA 流水线图。`I` = 发射（issued），`r` = 准备好调度（ready for dispatch），`D` = 已调度（dispatched），`E` = 已执行（executed），`R` = 已退役（retired）。](../../../img/perf-analysis/fma_tput_uica.png)
+
+<p align="center"><em>UICA 流水线图。`I` = 发射（issued），`r` = 准备好调度（ready for dispatch），`D` = 已调度（dispatched），`E` = 已执行（executed），`R` = 已退役（retired）。</em></p>
+
 
 UICA 是实际 CPU 流水线的一个非常简化的模型。例如，你可能注意到取指（instruction fetch）和译码（decode）阶段缺失。此外，UICA 不考虑缓存缺失和分支预测错误，因此它假设所有内存访问总是命中 L1 缓存，且分支总是被正确预测，而我们知道在现代处理器中并非如此。同样，这与我们的实验无关，因为我们仍然可以使用模拟结果来找到改进代码的方法。
 

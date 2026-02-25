@@ -5,8 +5,14 @@
 这种效应广为人知，即[阿姆达尔定律](https://en.wikipedia.org/wiki/Amdahl's_law)（Amdahl's law），[^6]它指出并行程序的加速比受其串行部分的限制。图 MT_AmdahlsLaw 展示了程序执行延迟的理论加速比与执行处理器数量的函数关系。对于一个 75% 部分可并行的程序，加速比收敛于 4。
 
 <div id="fig:AmdahlUSLLaws">
-![根据阿姆达尔定律，理论加速比上限与处理器数量的函数关系。](../../img/mt-perf/AmdahlsLaw.png)
-![线性加速比、阿姆达尔定律和通用可扩展性定律。](../../img/mt-perf/USL.png)
+![根据阿姆达尔定律，理论加速比上限与处理器数量的函数关系。](../../../img/mt-perf/AmdahlsLaw.png)
+
+<p align="center"><em>根据阿姆达尔定律，理论加速比上限与处理器数量的函数关系。</em></p>
+
+![线性加速比、阿姆达尔定律和通用可扩展性定律。](../../../img/mt-perf/USL.png)
+
+<p align="center"><em>线性加速比、阿姆达尔定律和通用可扩展性定律。</em></p>
+
 
 阿姆达尔定律和通用可扩展性定律。
 </div>
