@@ -10,6 +10,7 @@
   },
   "plugins": [
     "-sharing",
-    "expandable-chapters"
+    "expandable-chapters",
+    "katex"
   ]
 }
